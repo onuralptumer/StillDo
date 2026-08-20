@@ -61,6 +61,13 @@ export const MIGRATIONS: string[][] = [
     `ALTER TABLE tasks DROP COLUMN caught`,
     `ALTER TABLE tasks RENAME COLUMN created_at TO caught_at`,
   ],
+  // Rows captured by an earlier build froze the phrase "Typed · just now" into
+  // source, which then read as "just now" forever. Leave only the method.
+  [`UPDATE tasks SET source = REPLACE(source, ' · just now', '')`],
+  // `due` was the last of the display-only text columns: every capture wrote
+  // "No date yet" into it and nothing ever changed it, so both places that
+  // showed it said the same meaningless thing forever.
+  [`ALTER TABLE tasks DROP COLUMN due`],
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length;

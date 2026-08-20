@@ -13,7 +13,6 @@ import {
   SectionHeading,
 } from '../components/primitives';
 import { TaskRow } from '../components/TaskRow';
-import { clockTime } from '../date';
 import { font, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
 import { usePhotoCapture } from '../usePhotoCapture';
@@ -78,7 +77,8 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
   );
   const photo = usePhotoCapture(uri =>
     s.actions.capture(
-      `Photo · ${clockTime()}`,
+      // Just "Photo": the caught line under the row already gives the when.
+      'Photo',
       'Photo',
       'A picture is enough. You will recognise it tonight even if you cannot name it now.',
       uri,

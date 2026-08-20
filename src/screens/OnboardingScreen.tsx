@@ -14,7 +14,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { LinkButton, OutlineButton } from '../components/controls';
 import { Display, Kicker, Lead } from '../components/primitives';
-import { sweepTimes } from '../data';
+import { sweepTimePresets } from '../data';
 import { font, radius, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
 
@@ -116,7 +116,7 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
             <View>
               <Kicker>Sweep at</Kicker>
               <View style={styles.chooser}>
-                {sweepTimes.map(time => {
+                {sweepTimePresets.map(time => {
                   const on = s.settings.sweepTime === time;
                   return (
                     <Pressable

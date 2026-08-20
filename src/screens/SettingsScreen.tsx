@@ -2,7 +2,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import {
@@ -11,8 +11,10 @@ import {
   Kicker,
   SectionHeading,
 } from '../components/primitives';
+import { OptionSheet } from '../components/OptionSheet';
 import { settingDefs } from '../data';
 import { font, radius, space } from '../theme';
+import type { SettingKey } from '../types';
 import type { Stilldo } from '../useStilldo';
 
 const styles = StyleSheet.create({
@@ -68,6 +70,8 @@ const styles = StyleSheet.create({
 
 export const SettingsScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
+  const [picking, setPicking] = useState<SettingKey | null>(null);
+  const open = settingDefs.find(d => d.key === picking);
 
   return (
     <View style={styles.page}>
@@ -75,7 +79,7 @@ export const SettingsScreen = ({ s }: { s: Stilldo }) => {
       <Display style={styles.display}>Settings</Display>
 
       <SectionHeading>The sweep</SectionHeading>
-      {settingDefs.map(([key, label, desc, options]) => {
+      {settingDefs.map(({ key, label, desc, options, pick }) => {
         const value = s.settings[key];
         const off = value === 'Off';
         return (
@@ -84,7 +88,9 @@ export const SettingsScreen = ({ s }: { s: Stilldo }) => {
               accessibilityRole="button"
               accessibilityLabel={`${label}, ${value}`}
               accessibilityHint={desc}
-              onPress={() => s.actions.cycleSetting(key, options)}
+              onPress={() =>
+                pick ? setPicking(key) : s.actions.cycleSetting(key, options)
+              }
               style={({ pressed }) => [
                 styles.row,
                 pressed && { backgroundColor: c.tint },
@@ -105,6 +111,16 @@ export const SettingsScreen = ({ s }: { s: Stilldo }) => {
           </View>
         );
       })}
+
+      {!!open && (
+        <OptionSheet
+          title={open.label}
+          options={open.options}
+          value={s.settings[open.key]}
+          onPick={option => s.actions.setSetting(open.key, option)}
+          onClose={() => setPicking(null)}
+        />
+      )}
 
       <Text style={[styles.footnote, { color: c.mute }]}>
         * Stilldo stores captures on device. Sweep runs locally.

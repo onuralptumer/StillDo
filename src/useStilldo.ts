@@ -79,7 +79,6 @@ const newTask = (
   id,
   title,
   note,
-  when: 'No date yet',
   caught: Date.now(),
   nudge: 'gentle',
   status: 'open',

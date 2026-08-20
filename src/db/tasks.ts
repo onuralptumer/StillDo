@@ -9,7 +9,6 @@ type Row = {
   id: number;
   title: string;
   note: string;
-  due: string;
   caught_at: number;
   nudge: string;
   status: string;
@@ -23,7 +22,6 @@ const toTask = (r: Row): Task => ({
   id: r.id,
   title: r.title,
   note: r.note,
-  when: r.due,
   caught: r.caught_at,
   nudge: r.nudge as NudgeKey,
   status: r.status as TaskStatus,
@@ -45,14 +43,13 @@ export async function allTasks(db: SqlDriver): Promise<Task[]> {
 export async function insertTask(db: SqlDriver, task: Task): Promise<void> {
   await db.execute(
     `INSERT INTO tasks
-       (id, title, note, due, caught_at, nudge, status, source,
+       (id, title, note, caught_at, nudge, status, source,
         origin, photo_uri, defer_until)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+     VALUES (?,?,?,?,?,?,?,?,?,?)`,
     [
       task.id,
       task.title,
       task.note,
-      task.when,
       task.caught,
       task.nudge,
       task.status,
@@ -68,7 +65,6 @@ export async function insertTask(db: SqlDriver, task: Task): Promise<void> {
 const COLUMN: Partial<Record<keyof Task, string>> = {
   title: 'title',
   note: 'note',
-  when: 'due',
   caught: 'caught_at',
   nudge: 'nudge',
   status: 'status',

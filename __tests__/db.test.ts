@@ -108,13 +108,12 @@ test('upgrading an old database clears the demo rows it was seeded with', async 
   db.close();
 });
 
-test('reserved-word fields map onto their columns', async () => {
+test('renamed fields map onto their columns', async () => {
   const db = await fresh();
   const task: Task = {
     id: 900,
     title: 'Ring the vet',
     note: 'n',
-    when: 'Before 17:30',
     caught: 1_755_000_000_000,
     nudge: 'gentle',
     status: 'open',
@@ -123,16 +122,10 @@ test('reserved-word fields map onto their columns', async () => {
   };
   await insertTask(db, task);
 
-  const [row] = await db.execute<{
-    due: string;
-    caught_at: number;
-    origin: string;
-  }>('SELECT due, caught_at, origin FROM tasks WHERE id = 900');
-  expect(row).toEqual({
-    due: 'Before 17:30',
-    caught_at: 1_755_000_000_000,
-    origin: 'inbox',
-  });
+  const [row] = await db.execute<{ caught_at: number; origin: string }>(
+    'SELECT caught_at, origin FROM tasks WHERE id = 900',
+  );
+  expect(row).toEqual({ caught_at: 1_755_000_000_000, origin: 'inbox' });
   expect((await allTasks(db)).find(t => t.id === 900)).toEqual(task);
   db.close();
 });
@@ -157,6 +150,7 @@ test('the dead display-only columns are gone', async () => {
 
   expect(columns).not.toContain('place');
   expect(columns).not.toContain('slips');
+  expect(columns).not.toContain('due');
   expect(columns).toContain('caught_at');
   expect(columns).not.toContain('created_at');
   db.close();
@@ -215,5 +209,30 @@ test('a setting the database has never heard of falls back to its default', asyn
   const db = await fresh();
   await db.execute("DELETE FROM settings WHERE key = 'appearance'");
   expect((await allSettings(db)).appearance).toBe('System');
+  db.close();
+});
+
+test('the frozen "just now" phrase is cleaned out of older rows', async () => {
+  const db = nodeDriver();
+  // A version-4 database written by the build that stored the phrase.
+  for (const set of MIGRATIONS.slice(0, 4)) {
+    for (const statement of set) await db.execute(statement);
+  }
+  await db.execute('PRAGMA user_version = 4');
+  await insertTask(db, {
+    ...demoTasks[0],
+    id: 300,
+    source: 'Typed · just now',
+  });
+  await insertTask(db, { ...demoTasks[0], id: 301, source: 'Voice · just now' });
+  await insertTask(db, { ...demoTasks[0], id: 302, source: 'Missed call' });
+
+  await migrate(db);
+
+  const byId = new Map((await allTasks(db)).map(t => [t.id, t.source]));
+  expect(byId.get(300)).toBe('Typed');
+  expect(byId.get(301)).toBe('Voice');
+  // A source that never carried the phrase is left alone.
+  expect(byId.get(302)).toBe('Missed call');
   db.close();
 });

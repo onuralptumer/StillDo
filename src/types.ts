@@ -10,7 +10,6 @@ export type Task = {
   id: number;
   title: string;
   note: string;
-  when: string;
   /** Epoch milliseconds: the moment this was captured. */
   caught: number;
   nudge: NudgeKey;

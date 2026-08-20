@@ -223,7 +223,7 @@ describe('what survives being killed and reopened', () => {
       ref.current.actions.cycleSetting('sweepTime', ['21:00', '19:30']),
     );
     await act(async () =>
-      ref.current.actions.capture('Photo · 22:31', 'Photo', 'n', 'file:///r.jpg'),
+      ref.current.actions.capture('Photo', 'Photo', 'n', 'file:///r.jpg'),
     );
 
     // Reopen the store over the same database, as a cold launch would.
@@ -234,7 +234,7 @@ describe('what survives being killed and reopened', () => {
     expect(reopened.current.tasks.find(t => t.id === 2)!.nudge).toBe('alarm');
     expect(reopened.current.settings.sweepTime).toBe('19:30');
     expect(
-      reopened.current.tasks.find(t => t.title === 'Photo · 22:31')!.photoUri,
+      reopened.current.tasks.find(t => t.title === 'Photo')!.photoUri,
     ).toBe('file:///r.jpg');
   });
 

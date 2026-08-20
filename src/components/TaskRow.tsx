@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { stamp } from '../date';
 import { font } from '../theme';
 import type { Task } from '../types';
 import { DashedRule } from './primitives';
@@ -76,7 +77,7 @@ export const TaskRow = ({
     <View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${task.title}. ${task.source}`}
+        accessibilityLabel={`${task.title}. Caught ${stamp(task.caught)}`}
         onPress={onPress}
         style={({ pressed }) => [
           styles.row,
@@ -94,12 +95,15 @@ export const TaskRow = ({
           <Text style={[styles.title, { color: c.ink }, done && styles.faded]}>
             {task.title}
           </Text>
-          <Text style={[styles.meta, { color: c.mute }]}>{task.source}</Text>
+          {/* The moment it was caught — the same value the detail shows. */}
+          <Text style={[styles.meta, { color: c.mute }]}>
+            {stamp(task.caught)}
+          </Text>
         </View>
         {variant === 'today' ? (
-          <Text style={[styles.state, { color: c.mute }]}>
-            {done ? 'Done' : task.when}
-          </Text>
+          // Only done is worth a word here; an open task has nothing to add
+          // that the dot and the caught line do not already say.
+          done && <Text style={[styles.state, { color: c.mute }]}>Done</Text>
         ) : (
           <Text style={[styles.chevron, { color: c.mute }]}>→</Text>
         )}

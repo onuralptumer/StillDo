@@ -32,12 +32,6 @@ const MONTHS = [
 export const longDate = (d: Date = new Date(Date.now())) =>
   `${DAYS[d.getDay()]} · ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 
-const pad = (n: number) => String(n).padStart(2, '0');
-
-/** "22:31" — used to name a photo capture that carries no words of its own. */
-export const clockTime = (d: Date = new Date(Date.now())) =>
-  `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
 /** 'YYYY-MM-DD' in local time — the granularity a deferral needs. */

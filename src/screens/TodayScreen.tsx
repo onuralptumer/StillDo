@@ -99,7 +99,6 @@ export const TodayScreen = ({ s }: { s: Stilldo }) => {
                 <CardTitle>{now.title}</CardTitle>
                 <CardNote>{now.note}</CardNote>
                 <View style={styles.pills}>
-                  <Pill label={now.when} />
                   <Pill label={now.nudge} />
                 </View>
               </Pressable>
