@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/HankenGrotesk-Medium.ttf",
+      "sha1": "1ec2808d71589d4f20ea9c1ef318ba6136f8c2f8"
+    },
+    {
+      "path": "assets/fonts/HankenGrotesk-Regular.ttf",
+      "sha1": "25ffb06e7d9ab063ad12119c3759f9deaee71e99"
+    },
+    {
+      "path": "assets/fonts/HankenGrotesk-SemiBold.ttf",
+      "sha1": "25087309972ac40d582224c2f1ce012c35dc9c69"
+    }
+  ]
+}
