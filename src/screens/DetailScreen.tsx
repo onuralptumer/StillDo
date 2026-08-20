@@ -12,7 +12,9 @@ import {
   Kicker,
   Lead,
 } from '../components/primitives';
+import { Snapshot } from '../components/Snapshot';
 import { nudgeOptions } from '../data';
+import { stamp } from '../date';
 import { font, radius, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
 
@@ -25,6 +27,7 @@ const styles = StyleSheet.create({
   kicker: { marginTop: 24 },
   display: { marginTop: 10 },
   note: { marginTop: 16, opacity: 0.75 },
+  snapshot: { marginTop: 18 },
   specRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -83,6 +86,7 @@ const Spec = ({ label, value }: { label: string; value: string }) => {
 export const DetailScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
   const d = s.detail;
+  if (!d) return null;
   const done = d.status === 'done';
 
   return (
@@ -91,11 +95,10 @@ export const DetailScreen = ({ s }: { s: Stilldo }) => {
       <Kicker style={styles.kicker}>{d.source}</Kicker>
       <Display style={styles.display}>{d.title}</Display>
       <Lead style={styles.note}>{d.note}</Lead>
+      {!!d.photoUri && <Snapshot uri={d.photoUri} style={styles.snapshot} />}
 
       <DashedRule marginTop={space.section} />
-      <Spec label="Caught" value={d.caught} />
-      <Spec label="Where" value={d.where} />
-      <Spec label="Slipped past" value={d.slips} />
+      <Spec label="Caught" value={stamp(d.caught)} />
 
       <Kicker style={{ marginTop: space.section }}>
         How hard should I push?

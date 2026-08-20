@@ -56,13 +56,9 @@ const styles = StyleSheet.create({
   },
 });
 
-/** Accent marks the ones that keep slipping; done items go quiet. */
+/** Accent marks the ones set to alarm; done items go quiet. */
 export const dotColor = (t: Task, accent: string, mute: string, line: string) =>
-  t.status === 'done'
-    ? line
-    : t.nudge === 'alarm' || t.slips.includes('running')
-    ? accent
-    : mute;
+  t.status === 'done' ? line : t.nudge === 'alarm' ? accent : mute;
 
 export const TaskRow = ({
   task,

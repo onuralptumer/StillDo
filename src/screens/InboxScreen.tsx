@@ -3,9 +3,9 @@
  */
 
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
-import { LinkButton, OutlineButton } from '../components/controls';
+import { HoldButton, LinkButton, OutlineButton } from '../components/controls';
 import {
   Display,
   Kicker,
@@ -13,8 +13,11 @@ import {
   SectionHeading,
 } from '../components/primitives';
 import { TaskRow } from '../components/TaskRow';
+import { clockTime } from '../date';
 import { font, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
+import { usePhotoCapture } from '../usePhotoCapture';
+import { useVoiceCapture } from '../useVoiceCapture';
 
 const styles = StyleSheet.create({
   page: {
@@ -46,10 +49,44 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 9,
   },
+  status: {
+    marginTop: 12,
+    gap: 6,
+  },
+  statusLabel: {
+    fontFamily: font.medium,
+    fontSize: 10,
+    letterSpacing: 0.9,
+    textTransform: 'uppercase',
+  },
+  heard: {
+    fontFamily: font.regular,
+    fontSize: 15,
+    lineHeight: 18.9,
+  },
 });
 
 export const InboxScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
+
+  const voice = useVoiceCapture(text =>
+    s.actions.capture(
+      text,
+      'Voice',
+      'Caught mid-sentence. The sweep will ask what you meant.',
+    ),
+  );
+  const photo = usePhotoCapture(uri =>
+    s.actions.capture(
+      `Photo · ${clockTime()}`,
+      'Photo',
+      'A picture is enough. You will recognise it tonight even if you cannot name it now.',
+      uri,
+    ),
+  );
+  const status = voice.listening
+    ? voice.partial
+    : voice.error || photo.error || '';
   const list = s.tasks.filter(t => t.from === 'inbox' && t.status !== 'dropped');
   const uncategorised = s.tasks.filter(
     t => t.from === 'inbox' && t.status === 'open',
@@ -82,34 +119,50 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
       </View>
 
       <View style={styles.capture}>
-        <OutlineButton
-          size="sm"
-          variant="quiet"
+        <HoldButton
           label="Hold to speak"
-          onPress={() =>
-            s.actions.capture(
-              'Something about the boiler service',
-              'Voice · just now',
-              'Caught mid-sentence. The sweep will ask what you meant.',
-            )
-          }
+          holdingLabel="Listening…"
+          holding={voice.listening}
+          onPressIn={() => {
+            photo.dismissError();
+            voice.start();
+          }}
+          onPressOut={voice.stop}
         />
         <OutlineButton
           size="sm"
           variant="quiet"
           label="Snap it"
-          onPress={() =>
-            s.actions.capture(
-              'Photo — receipt on the counter',
-              'Photo · just now',
-              'A picture is enough. You will recognise it tonight even if you cannot name it now.',
-            )
-          }
+          onPress={() => {
+            voice.dismissError();
+            photo.choose();
+          }}
         />
       </View>
 
+      {(voice.listening || !!status) && (
+        <View style={styles.status}>
+          {voice.listening && (
+            <Text style={[styles.statusLabel, { color: c.accent }]}>
+              Release to catch it
+            </Text>
+          )}
+          {!!status && (
+            <Text
+              style={[
+                voice.listening ? styles.heard : styles.statusLabel,
+                { color: voice.listening ? c.ink : c.accent },
+              ]}>
+              {status}
+            </Text>
+          )}
+        </View>
+      )}
+
       <SectionHeading>
-        {`${uncategorised} uncategorised — leave them that way`}
+        {uncategorised === 0
+          ? 'Nothing waiting — dump the next one here'
+          : `${uncategorised} uncategorised — leave them that way`}
       </SectionHeading>
       {list.map(t => (
         <TaskRow

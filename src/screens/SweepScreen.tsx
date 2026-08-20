@@ -15,6 +15,7 @@ import {
   Kicker,
   Lead,
 } from '../components/primitives';
+import { Snapshot } from '../components/Snapshot';
 import { font, radius, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
 
@@ -80,7 +81,8 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
   const card = s.sweepCard;
   const total = s.sweepTotal;
-  const pct = total ? Math.round((s.sweepIdx / total) * 100) : 100;
+  // A run with nothing in it has made no progress, rather than all of it.
+  const pct = total ? Math.round((s.sweepIdx / total) * 100) : 0;
   const did = s.sweepLog.filter(v => v === 'done').length;
   const moved = s.sweepLog.filter(v => v === 'later').length;
 
@@ -98,7 +100,7 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
         />
       </View>
       <Kicker style={styles.counter}>
-        {card ? `${s.sweepIdx + 1} of ${total}` : 'Swept'}
+        {card ? `${s.sweepIdx + 1} of ${total}` : total === 0 ? 'Nothing to check' : 'Swept'}
       </Kicker>
 
       {card ? (
@@ -107,6 +109,7 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
             <Kicker style={{ color: c.accent }}>{card.source}</Kicker>
             <CardTitle>{card.title}</CardTitle>
             <CardNote>{card.note}</CardNote>
+            {!!card.photoUri && <Snapshot uri={card.photoUri} />}
           </View>
 
           <View style={styles.choices}>
@@ -137,18 +140,24 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
         </>
       ) : (
         <View style={styles.done}>
-          <DisplayLarge>{did > 0 ? 'Day closed.' : 'All clear.'}</DisplayLarge>
+          <DisplayLarge>
+            {total === 0 ? 'Nothing to sweep.' : did > 0 ? 'Day closed.' : 'All clear.'}
+          </DisplayLarge>
           <Lead style={styles.resultBody}>
-            {`${did} done, ${moved} moved to tomorrow. Nothing is sitting in your head overnight — it is all here, and it will find you again.`}
+            {total === 0
+              ? 'Nothing was left open. When something is, this is where it comes back to you.'
+              : `${did} done, ${moved} moved to tomorrow. Nothing is sitting in your head overnight — it is all here, and it will find you again.`}
           </Lead>
-          <View>
-            <DashedRule />
-            <Text style={[styles.streak, { color: c.accent }]}>
-              Fourth sweep in a row
-            </Text>
-          </View>
+          {total > 0 && (
+            <View>
+              <DashedRule />
+              <Text style={[styles.streak, { color: c.accent }]}>
+                Fourth sweep in a row
+              </Text>
+            </View>
+          )}
           <OutlineButton
-            label="Close the day"
+            label={total === 0 ? 'Back to today' : 'Close the day'}
             onPress={() => s.actions.go('today')}
           />
         </View>

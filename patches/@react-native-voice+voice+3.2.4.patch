@@ -1,0 +1,19 @@
+diff --git a/node_modules/@react-native-voice/voice/ios/Voice/Voice.m b/node_modules/@react-native-voice/voice/ios/Voice/Voice.m
+index fd9dad8..80a137f 100644
+--- a/node_modules/@react-native-voice/voice/ios/Voice/Voice.m
++++ b/node_modules/@react-native-voice/voice/ios/Voice/Voice.m
+@@ -153,6 +153,14 @@ - (void) setupAndStartRecognizing:(NSString*)localeStr {
+     // Configure request so that results are returned before audio recording is finished
+     self.recognitionRequest.shouldReportPartialResults = YES;
+ 
++    // Stilldo promises captures stay on the device, so keep recognition local
++    // whenever this device and locale have an on-device model to do it with.
++    if (@available(iOS 13.0, *)) {
++        if (self.speechRecognizer.supportsOnDeviceRecognition) {
++            self.recognitionRequest.requiresOnDeviceRecognition = YES;
++        }
++    }
++    
+     if (self.recognitionRequest == nil) {
+         [self sendResult:@{@"code": @"recognition_init"} :nil :nil :nil];
+         [self teardown];

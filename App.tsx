@@ -23,13 +23,16 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { TabBar } from './src/components/TabBar';
+import { Kicker, Lead } from './src/components/primitives';
+import { useDatabase } from './src/db/useDatabase';
 import { ThemeProvider } from './src/components/ThemeContext';
 import { DetailScreen } from './src/screens/DetailScreen';
 import { InboxScreen } from './src/screens/InboxScreen';
+import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { SweepScreen } from './src/screens/SweepScreen';
 import { TodayScreen } from './src/screens/TodayScreen';
-import { dark, font, light } from './src/theme';
+import { dark, font, light, space } from './src/theme';
 import type { Screen } from './src/types';
 import { useStilldo } from './src/useStilldo';
 
@@ -50,10 +53,28 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   scroll: { flex: 1 },
+  centre: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+    gap: 14,
+  },
+  fault: {
+    paddingHorizontal: space.gutter,
+    paddingBottom: 12,
+  },
+  faultText: {
+    fontFamily: font.medium,
+    fontSize: 10,
+    letterSpacing: 0.9,
+    textTransform: 'uppercase',
+  },
 });
 
 function AppContent() {
-  const s = useStilldo();
+  const { db, error: openError } = useDatabase();
+  const s = useStilldo(db);
   const insets = useSafeAreaInsets();
   const system = useColorScheme();
 
@@ -72,6 +93,8 @@ function AppContent() {
   }, [s.screen, s.detailId]);
 
   const activeTab: Screen = s.screen === 'detail' ? s.prev : s.screen;
+  // The intro owns the whole frame: no tabs to wander off into mid-sentence.
+  const onboarding = s.ready && s.settings.onboarded !== 'yes';
 
   return (
     <ThemeProvider palette={c}>
@@ -87,24 +110,46 @@ function AppContent() {
           <Text style={[styles.wordmark, { color: c.mute }]}>Stilldo</Text>
         </View>
 
-        <KeyboardAvoidingView
-          style={styles.scroll}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView
-            ref={scroller}
+        {openError ? (
+          <View style={styles.centre}>
+            <Kicker>Stilldo could not open its store</Kicker>
+            <Lead>{openError}</Lead>
+          </View>
+        ) : !s.ready ? (
+          // A blank hold rather than a spinner: the first read is a local file
+          // and lands in a frame or two.
+          <View style={styles.scroll} />
+        ) : onboarding ? (
+          <OnboardingScreen s={s} />
+        ) : (
+          <KeyboardAvoidingView
             style={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag">
-            {s.screen === 'today' && <TodayScreen s={s} />}
-            {s.screen === 'inbox' && <InboxScreen s={s} />}
-            {s.screen === 'detail' && <DetailScreen s={s} />}
-            {s.screen === 'sweep' && <SweepScreen s={s} />}
-            {s.screen === 'settings' && <SettingsScreen s={s} />}
-          </ScrollView>
-        </KeyboardAvoidingView>
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <ScrollView
+              ref={scroller}
+              style={styles.scroll}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag">
+              {s.screen === 'today' && <TodayScreen s={s} />}
+              {s.screen === 'inbox' && <InboxScreen s={s} />}
+              {s.screen === 'detail' && <DetailScreen s={s} />}
+              {s.screen === 'sweep' && <SweepScreen s={s} />}
+              {s.screen === 'settings' && <SettingsScreen s={s} />}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        )}
 
         <View style={{ paddingBottom: Math.max(insets.bottom, 10) }}>
-          <TabBar active={activeTab} onSelect={s.actions.go} />
+          {!!s.dbError && (
+            <View style={styles.fault}>
+              <Text style={[styles.faultText, { color: c.accent }]}>
+                Not saved — {s.dbError}
+              </Text>
+            </View>
+          )}
+          {!onboarding && (
+            <TabBar active={activeTab} onSelect={s.actions.go} />
+          )}
         </View>
       </View>
     </ThemeProvider>

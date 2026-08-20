@@ -60,6 +60,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textDecorationLine: 'underline',
   },
+  transparent: {
+    backgroundColor: 'transparent',
+  },
   pill: {
     borderWidth: 1,
     borderRadius: radius.pill,
@@ -168,5 +171,53 @@ export const Pill = ({ label }: { label: string }) => {
     <View style={[styles.pill, { borderColor: c.mute }]}>
       <Text style={[styles.pillLabel, { color: c.ink }]}>{label}</Text>
     </View>
+  );
+};
+
+/**
+ * "Hold to speak": the press itself is the gesture, so the recogniser runs
+ * between press-in and release rather than firing once on tap.
+ */
+export const HoldButton = ({
+  label,
+  holdingLabel,
+  holding,
+  onPressIn,
+  onPressOut,
+  style,
+}: {
+  label: string;
+  holdingLabel: string;
+  holding: boolean;
+  onPressIn: () => void;
+  onPressOut: () => void;
+  style?: StyleProp<ViewStyle>;
+}) => {
+  const c = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint="Hold to record, release to catch it"
+      accessibilityState={{ busy: holding }}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={[
+        styles.outline,
+        styles.outlineSm,
+        styles.transparent,
+        { borderColor: holding ? c.accent : c.mute },
+        holding && { backgroundColor: c.tint },
+        style,
+      ]}>
+      <Text
+        style={[
+          styles.outlineLabel,
+          styles.outlineLabelSm,
+          { color: holding ? c.accent : c.ink },
+        ]}>
+        {holding ? holdingLabel : label}
+      </Text>
+    </Pressable>
   );
 };

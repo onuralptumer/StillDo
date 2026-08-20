@@ -46,15 +46,24 @@ const styles = StyleSheet.create({
     letterSpacing: 0.88,
     textTransform: 'uppercase',
   },
+  held: { marginTop: 9 },
   cta: { marginTop: 12 },
 });
 
 export const TodayScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
-  const openCount = s.openTasks.length;
-  const now = s.openTasks[0] || s.tasks[0];
+  const openCount = s.dueTasks.length;
+  const held = s.deferredTasks.length;
+  // Nothing has ever been caught: the day has no shape to show yet.
+  const blank = s.tasks.length === 0;
+  const now = s.dueTasks[0];
+  const deferred = new Set(s.deferredTasks.map(t => t.id));
   const rest = s.tasks.filter(
-    t => t.from === 'today' && t.id !== now?.id && t.status !== 'dropped',
+    t =>
+      t.from === 'today' &&
+      t.id !== now?.id &&
+      t.status !== 'dropped' &&
+      !deferred.has(t.id),
   );
 
   return (
@@ -62,40 +71,72 @@ export const TodayScreen = ({ s }: { s: Stilldo }) => {
       <Kicker>{longDate()}</Kicker>
       <Display style={styles.display}>Today</Display>
       <Lead style={styles.blurb}>
-        {openCount > 0
+        {blank
+          ? 'Nothing caught yet. Put the first loose end in the inbox and let go of it.'
+          : openCount > 0
           ? `${openCount} open. You do not have to remember them — that is the app's job now.`
           : 'Nothing open. The sweep found everything.'}
       </Lead>
 
-      <SectionHeading>Right now</SectionHeading>
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => s.actions.open(now.id)}
-        style={({ pressed }) => [
-          styles.card,
-          { backgroundColor: pressed ? c.raiseHi : c.raise },
-        ]}>
-        <CardTitle>{now.title}</CardTitle>
-        <CardNote>{now.note}</CardNote>
-        <View style={styles.pills}>
-          <Pill label={now.when} />
-          <Pill label={now.nudge} />
-        </View>
-      </Pressable>
+      {blank ? (
+        <OutlineButton
+          label="Catch the first one"
+          onPress={() => s.actions.go('inbox')}
+          style={styles.cta}
+        />
+      ) : (
+        <>
+          {!!now && (
+            <>
+              <SectionHeading>Right now</SectionHeading>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => s.actions.open(now.id)}
+                style={({ pressed }) => [
+                  styles.card,
+                  { backgroundColor: pressed ? c.raiseHi : c.raise },
+                ]}>
+                <CardTitle>{now.title}</CardTitle>
+                <CardNote>{now.note}</CardNote>
+                <View style={styles.pills}>
+                  <Pill label={now.when} />
+                  <Pill label={now.nudge} />
+                </View>
+              </Pressable>
+            </>
+          )}
 
-      <SectionHeading>Also today</SectionHeading>
-      {rest.map(t => (
-        <TaskRow key={t.id} task={t} onPress={() => s.actions.open(t.id)} />
-      ))}
+          {rest.length > 0 && (
+            <>
+              <SectionHeading>Also today</SectionHeading>
+              {rest.map(t => (
+                <TaskRow
+                  key={t.id}
+                  task={t}
+                  onPress={() => s.actions.open(t.id)}
+                />
+              ))}
+            </>
+          )}
 
-      <Text style={[styles.teaser, { color: c.accent }]}>
-        {`Sweep tonight at ${s.settings.sweepTime} · ${openCount} to check`}
-      </Text>
-      <OutlineButton
-        label="Start the sweep"
-        onPress={s.actions.startSweep}
-        style={styles.cta}
-      />
+          <Text style={[styles.teaser, { color: c.accent }]}>
+            {`Sweep tonight at ${s.settings.sweepTime} · ${openCount} to check`}
+          </Text>
+          {held > 0 && (
+            // Moved out of today, but say so — otherwise it reads as lost.
+            <Kicker style={styles.held}>
+              {held === 1
+                ? '1 waiting for tomorrow'
+                : `${held} waiting for tomorrow`}
+            </Kicker>
+          )}
+          <OutlineButton
+            label="Start the sweep"
+            onPress={s.actions.startSweep}
+            style={styles.cta}
+          />
+        </>
+      )}
     </View>
   );
 };

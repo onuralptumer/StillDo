@@ -33,6 +33,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Stilldo listens while you hold the capture button, so a loose end can be caught out loud instead of typed.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Stilldo turns what you say into the words on the task, so you can recognise it again at the evening sweep.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Stilldo attaches a photo to a capture, so a receipt or a form is enough to jog your memory later.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Stilldo attaches a photo you have already taken to a capture, so you do not have to shoot it again.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>RCTNewArchEnabled</key>
