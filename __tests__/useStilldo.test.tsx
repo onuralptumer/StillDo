@@ -212,13 +212,12 @@ test('settings cycle through their options and wrap', async () => {
 });
 
 describe('what survives being killed and reopened', () => {
-  test('a capture, a resolution, a nudge and a setting all persist', async () => {
+  test('a capture, a resolution and a setting all persist', async () => {
     const { ref, db } = await mount();
 
     await act(async () => ref.current.actions.setDraft('RING THE VET'));
     await act(async () => ref.current.actions.addFromDraft());
     await act(async () => ref.current.actions.resolve(1, 'done'));
-    await act(async () => ref.current.actions.setNudge(2, 'alarm'));
     await act(async () =>
       ref.current.actions.cycleSetting('sweepTime', ['21:00', '19:30']),
     );
@@ -231,7 +230,6 @@ describe('what survives being killed and reopened', () => {
 
     expect(reopened.current.tasks.map(t => t.title)).toContain('RING THE VET');
     expect(reopened.current.tasks.find(t => t.id === 1)!.status).toBe('done');
-    expect(reopened.current.tasks.find(t => t.id === 2)!.nudge).toBe('alarm');
     expect(reopened.current.settings.sweepTime).toBe('19:30');
     expect(
       reopened.current.tasks.find(t => t.title === 'Photo')!.photoUri,
@@ -285,7 +283,7 @@ describe('what survives being killed and reopened', () => {
       .spyOn(db, 'execute')
       .mockRejectedValueOnce(new Error('database is locked'));
 
-    await act(async () => ref.current.actions.setNudge(3, 'alarm'));
+    await act(async () => ref.current.actions.resolve(3, 'done'));
 
     expect(ref.current.dbError).toBe('database is locked');
   });

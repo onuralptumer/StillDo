@@ -1,34 +1,54 @@
 /**
+ * A floating pill bar: the active tab carries its label, the rest are marks.
+ *
  * @format
  */
 
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { tabs } from '../data';
-import { font, space } from '../theme';
+import { font } from '../theme';
 import type { Screen } from '../types';
-import { DashedRule } from './primitives';
+import { TAB_ICONS } from './icons';
 import { useTheme } from './ThemeContext';
+
+const HEIGHT = 62;
 
 const styles = StyleSheet.create({
   bar: {
+    height: HEIGHT,
+    borderRadius: HEIGHT / 2,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 14,
-    paddingBottom: 10,
-    paddingHorizontal: space.gutter,
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    // Enough lift to read as floating over the page, no more.
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 18,
+        shadowOffset: { width: 0, height: 8 },
+      },
+      android: { elevation: 5 },
+    }),
   },
   tab: {
-    paddingVertical: 6,
-    paddingHorizontal: 2,
+    height: 46,
+    minWidth: 46,
+    borderRadius: 23,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
+  /** Only the active tab is wide enough to say its name. */
+  chosen: { paddingHorizontal: 18 },
   label: {
     fontFamily: font.medium,
     fontSize: 10,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: 5,
   },
 });
 
@@ -41,26 +61,37 @@ export const TabBar = ({
 }) => {
   const c = useTheme();
   return (
-    <View>
-      <DashedRule />
-      <View style={styles.bar}>
-        {tabs.map(([key, label]) => {
-          const on = active === key;
-          return (
-            <Pressable
-              key={key}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              onPress={() => onSelect(key as Screen)}
-              style={styles.tab}>
-              <Text style={[styles.label, { color: on ? c.ink : c.mute }]}>
-                {label}
-              </Text>
-              <DashedRule color={on ? c.ink : 'transparent'} />
-            </Pressable>
-          );
-        })}
-      </View>
+    <View style={[styles.bar, { backgroundColor: c.raise }]}>
+      {tabs.map(([key, label]) => {
+        const on = active === key;
+        const Icon = TAB_ICONS[key as Screen];
+        return (
+          <Pressable
+            key={key}
+            accessibilityRole="tab"
+            accessibilityLabel={label}
+            accessibilityState={{ selected: on }}
+            onPress={() => onSelect(key as Screen)}
+            style={({ pressed }) => [
+              styles.tab,
+              on && styles.chosen,
+              on && { backgroundColor: c.raiseHi },
+              pressed && !on && { backgroundColor: c.tint },
+            ]}>
+            {/*
+              Dimmed ink rather than the mute tone: against the raised bar,
+              mute nearly disappears in the dark theme, and these are the
+              app's only means of navigation.
+            */}
+            <Icon color={c.ink} opacity={on ? 1 : 0.55} />
+            {on && (
+              <Text style={[styles.label, { color: c.ink }]}>{label}</Text>
+            )}
+          </Pressable>
+        );
+      })}
     </View>
   );
 };
+
+export const TAB_BAR_HEIGHT = HEIGHT;

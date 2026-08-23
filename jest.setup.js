@@ -27,3 +27,23 @@ jest.mock('@op-engineering/op-sqlite', () => ({
     throw new Error('op-sqlite is not available under test');
   },
 }));
+
+// Notifee is native too. The tests drive this stand-in directly and assert on
+// what the app asked it to schedule; the enums have to match the real ones.
+jest.mock('@notifee/react-native', () => ({
+  __esModule: true,
+  AndroidImportance: { DEFAULT: 3 },
+  AuthorizationStatus: { NOT_DETERMINED: -1, DENIED: 0, AUTHORIZED: 1, PROVISIONAL: 2 },
+  RepeatFrequency: { NONE: -1, HOURLY: 0, DAILY: 1, WEEKLY: 2 },
+  TriggerType: { TIMESTAMP: 0, INTERVAL: 1 },
+  default: {
+    requestPermission: jest.fn(() => Promise.resolve({ authorizationStatus: 1 })),
+    getNotificationSettings: jest.fn(() =>
+      Promise.resolve({ authorizationStatus: 1 }),
+    ),
+    createChannel: jest.fn(() => Promise.resolve('sweep')),
+    createTriggerNotification: jest.fn(() => Promise.resolve('sweep')),
+    cancelTriggerNotification: jest.fn(() => Promise.resolve()),
+    openNotificationSettings: jest.fn(() => Promise.resolve()),
+  },
+}));

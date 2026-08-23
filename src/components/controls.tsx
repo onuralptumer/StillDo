@@ -1,5 +1,5 @@
 /**
- * Buttons and pills. The canvas used `style-hover`; on touch the equivalent
+ * Buttons. The canvas used `style-hover`; on touch the equivalent
  * affordance is the pressed state, so that is what those hints map to here.
  *
  * @format
@@ -10,7 +10,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -62,18 +61,6 @@ const styles = StyleSheet.create({
   },
   transparent: {
     backgroundColor: 'transparent',
-  },
-  pill: {
-    borderWidth: 1,
-    borderRadius: radius.pill,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  pillLabel: {
-    fontFamily: font.medium,
-    fontSize: 10,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
   },
 });
 
@@ -162,15 +149,6 @@ export const LinkButton = ({
         </Text>
       )}
     </Pressable>
-  );
-};
-
-export const Pill = ({ label }: { label: string }) => {
-  const c = useTheme();
-  return (
-    <View style={[styles.pill, { borderColor: c.mute }]}>
-      <Text style={[styles.pillLabel, { color: c.ink }]}>{label}</Text>
-    </View>
   );
 };
 

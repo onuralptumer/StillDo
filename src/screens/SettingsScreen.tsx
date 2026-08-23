@@ -16,6 +16,7 @@ import { settingDefs } from '../data';
 import { font, radius, space } from '../theme';
 import type { SettingKey } from '../types';
 import type { Stilldo } from '../useStilldo';
+import type { SweepAlarm } from '../useSweepAlarm';
 
 const styles = StyleSheet.create({
   page: {
@@ -45,6 +46,16 @@ const styles = StyleSheet.create({
     opacity: 0.55,
     marginTop: 6,
   },
+  // Sits directly under "Sweep at", where the promise it qualifies is made.
+  blocked: {
+    paddingBottom: 18,
+    marginTop: -4,
+  },
+  blockedText: {
+    fontFamily: font.regular,
+    fontSize: 12,
+    lineHeight: 15.1,
+  },
   chip: {
     borderWidth: 1,
     borderRadius: radius.pill,
@@ -68,7 +79,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export const SettingsScreen = ({ s }: { s: Stilldo }) => {
+export const SettingsScreen = ({
+  s,
+  alarm,
+}: {
+  s: Stilldo;
+  alarm: SweepAlarm;
+}) => {
   const c = useTheme();
   const [picking, setPicking] = useState<SettingKey | null>(null);
   const open = settingDefs.find(d => d.key === picking);
@@ -81,7 +98,6 @@ export const SettingsScreen = ({ s }: { s: Stilldo }) => {
       <SectionHeading>The sweep</SectionHeading>
       {settingDefs.map(({ key, label, desc, options, pick }) => {
         const value = s.settings[key];
-        const off = value === 'Off';
         return (
           <View key={key}>
             <Pressable
@@ -99,15 +115,27 @@ export const SettingsScreen = ({ s }: { s: Stilldo }) => {
                 <Text style={[styles.label, { color: c.ink }]}>{label}</Text>
                 <Text style={[styles.desc, { color: c.ink }]}>{desc}</Text>
               </View>
-              <View
-                style={[styles.chip, { borderColor: off ? c.line : c.ink }]}>
-                <Text
-                  style={[styles.chipLabel, { color: off ? c.mute : c.ink }]}>
+              <View style={[styles.chip, { borderColor: c.ink }]}>
+                <Text style={[styles.chipLabel, { color: c.ink }]}>
                   {value}
                 </Text>
               </View>
             </Pressable>
             <DashedRule />
+            {key === 'sweepTime' && alarm.permitted === false && (
+              // The time is set but nothing can act on it — say so here rather
+              // than let the row keep promising a sweep that never arrives.
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Turn on notifications"
+                onPress={alarm.openSettings}
+                style={styles.blocked}>
+                <Text style={[styles.blockedText, { color: c.accent }]}>
+                  Notifications are off, so the sweep cannot reach you. Turn
+                  them on →
+                </Text>
+              </Pressable>
+            )}
           </View>
         );
       })}

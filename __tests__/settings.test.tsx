@@ -9,8 +9,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SettingsScreen } from '../src/screens/SettingsScreen';
 import { prepare } from '../src/db/schema';
 import { nodeDriver } from '../testing/nodeDriver';
-import { sweepTimePresets, sweepTimes } from '../src/data';
+import { settingDefs, sweepTimePresets, sweepTimes } from '../src/data';
 import { useStilldo, type Stilldo } from '../src/useStilldo';
+import type { SweepAlarm } from '../src/useSweepAlarm';
 
 const act = ReactTestRenderer.act;
 
@@ -20,7 +21,13 @@ const METRICS = {
   insets: { top: 59, left: 0, right: 0, bottom: 34 },
 };
 
-async function mount() {
+const allowed: SweepAlarm = {
+  permitted: true,
+  error: null,
+  openSettings: () => {},
+};
+
+async function mount(alarm: SweepAlarm = allowed) {
   const db = nodeDriver();
   await prepare(db);
   const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
@@ -28,7 +35,7 @@ async function mount() {
   const Host = () => {
     const s = useStilldo(db);
     ref.current = s;
-    return s.ready ? <SettingsScreen s={s} /> : null;
+    return s.ready ? <SettingsScreen s={s} alarm={alarm} /> : null;
   };
   await act(async () => {
     tree = ReactTestRenderer.create(
@@ -140,15 +147,66 @@ test('the wheel stays open until Done, and Done changes nothing', async () => {
   expect(ref.current.settings.sweepTime).toBe('20:30');
 });
 
-test('the two-and-three-option rows still cycle on tap', async () => {
+test('the three-option row still cycles on tap', async () => {
   const { ref, tree } = await mount();
-  expect(ref.current.settings.tone).toBe('Warm');
+  expect(ref.current.settings.appearance).toBe('System');
 
-  await act(async () => rowFor(tree, 'Voice').props.onPress());
-  expect(ref.current.settings.tone).toBe('Plain');
+  await act(async () => rowFor(tree, 'Appearance').props.onPress());
+  expect(ref.current.settings.appearance).toBe('Dark');
   // No sheet for these.
   expect(control(tree, 'Close')).toBeUndefined();
 
-  await act(async () => rowFor(tree, 'Voice').props.onPress());
-  expect(ref.current.settings.tone).toBe('Blunt');
+  await act(async () => rowFor(tree, 'Appearance').props.onPress());
+  expect(ref.current.settings.appearance).toBe('Light');
+});
+
+/**
+ * The screen used to offer auto-resurface, a voice, quiet hours, place
+ * triggers and a weekly look-back. None of them were ever read by anything, so
+ * they are gone; this is here to stop one drifting back in unimplemented.
+ */
+test('Settings offers nothing the app does not actually do', async () => {
+  const { tree } = await mount();
+  const shown = settingDefs.map(d => d.label);
+  expect(shown).toEqual(['Sweep at', 'Appearance']);
+
+  for (const gone of [
+    'Auto-resurface',
+    'Voice',
+    'Quiet after 22:30',
+    'Place triggers',
+    'Weekly look-back',
+  ]) {
+    expect(rowFor(tree, gone)).toBeUndefined();
+  }
+});
+
+describe('what Settings admits about the alarm', () => {
+  const blocked = (tree: ReactTestRenderer.ReactTestRenderer) =>
+    tree.root
+      .findAll(n => n.props.accessibilityRole === 'button')
+      .find(n => n.props.accessibilityLabel === 'Turn on notifications');
+
+  test('a permitted sweep says nothing extra', async () => {
+    const { tree } = await mount();
+    expect(blocked(tree)).toBeUndefined();
+  });
+
+  test('a blocked sweep owns up, rather than quietly promising a time', async () => {
+    const { tree } = await mount({ ...allowed, permitted: false });
+    expect(blocked(tree)).toBeTruthy();
+  });
+
+  test('the notice is the way into the system switch', async () => {
+    const openSettings = jest.fn();
+    const { tree } = await mount({ ...allowed, permitted: false, openSettings });
+
+    await act(async () => blocked(tree)!.props.onPress());
+    expect(openSettings).toHaveBeenCalled();
+  });
+
+  test('an unanswered permission holds its tongue until the answer lands', async () => {
+    const { tree } = await mount({ ...allowed, permitted: null });
+    expect(blocked(tree)).toBeUndefined();
+  });
 });

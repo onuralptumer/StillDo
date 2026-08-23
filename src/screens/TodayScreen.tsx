@@ -5,7 +5,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
-import { OutlineButton, Pill } from '../components/controls';
+import { OutlineButton } from '../components/controls';
 import {
   CardNote,
   CardTitle,
@@ -32,12 +32,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     padding: 24,
     gap: 14,
-  },
-  pills: {
-    flexDirection: 'row',
-    gap: 9,
-    flexWrap: 'wrap',
-    marginTop: 4,
   },
   teaser: {
     marginTop: space.section,
@@ -98,9 +92,6 @@ export const TodayScreen = ({ s }: { s: Stilldo }) => {
                 ]}>
                 <CardTitle>{now.title}</CardTitle>
                 <CardNote>{now.note}</CardNote>
-                <View style={styles.pills}>
-                  <Pill label={now.nudge} />
-                </View>
               </Pressable>
             </>
           )}

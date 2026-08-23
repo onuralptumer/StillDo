@@ -2,7 +2,6 @@
  * @format
  */
 
-export type NudgeKey = 'gentle' | 'insistent' | 'alarm';
 export type TaskStatus = 'open' | 'done' | 'dropped';
 export type Origin = 'today' | 'inbox';
 
@@ -12,7 +11,6 @@ export type Task = {
   note: string;
   /** Epoch milliseconds: the moment this was captured. */
   caught: number;
-  nudge: NudgeKey;
   status: TaskStatus;
   source: string;
   from: Origin;
@@ -33,11 +31,6 @@ export type SettingKey =
   /** Not shown in Settings: whether the intro has been through once. */
   | 'onboarded'
   | 'sweepTime'
-  | 'autoResurface'
-  | 'tone'
-  | 'silentHours'
-  | 'location'
-  | 'weeklyReview'
   | 'appearance';
 
 export type Settings = Record<SettingKey, string>;

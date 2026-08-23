@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
   },
 });
 
-/** Accent marks the ones set to alarm; done items go quiet. */
-export const dotColor = (t: Task, accent: string, mute: string, line: string) =>
-  t.status === 'done' ? line : t.nudge === 'alarm' ? accent : mute;
+/** Open items carry a mark; done ones go quiet. */
+export const dotColor = (t: Task, mute: string, line: string) =>
+  t.status === 'done' ? line : mute;
 
 export const TaskRow = ({
   task,
@@ -87,7 +87,7 @@ export const TaskRow = ({
           <View
             style={[
               styles.dot,
-              { backgroundColor: dotColor(task, c.accent, c.mute, c.line) },
+              { backgroundColor: dotColor(task, c.mute, c.line) },
             ]}
           />
         )}

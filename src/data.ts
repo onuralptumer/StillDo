@@ -5,16 +5,11 @@
  * @format
  */
 
-import type { NudgeKey, SettingKey, Settings } from './types';
+import type { SettingKey, Settings } from './types';
 
 export const seedSettings: Settings = {
   onboarded: 'no',
   sweepTime: '21:00',
-  autoResurface: 'On',
-  tone: 'Warm',
-  silentHours: 'On',
-  location: 'On',
-  weeklyReview: 'Sun',
   appearance: 'System',
 };
 
@@ -32,24 +27,6 @@ export const sweepTimes = Array.from({ length: 48 }, (_, i) =>
  */
 export const sweepTimePresets = ['19:30', '21:00', '22:30'];
 
-export const nudgeOptions: {key: NudgeKey; label: string; desc: string}[] = [
-  {
-    key: 'gentle',
-    label: 'Gentle',
-    desc: 'One quiet nudge, then it waits for the sweep.',
-  },
-  {
-    key: 'insistent',
-    label: 'Insistent',
-    desc: 'Comes back every hour until you answer it.',
-  },
-  {
-    key: 'alarm',
-    label: 'Alarm',
-    desc: 'Full sound and a lock-screen takeover. For the ones that cost you.',
-  },
-];
-
 /** A row on the Settings screen. */
 export type SettingDef = {
   key: SettingKey;
@@ -63,6 +40,11 @@ export type SettingDef = {
 /**
  * The rows the Settings screen shows, in order. `onboarded` is deliberately
  * not among them.
+ *
+ * Settings only lists what the app actually does. Earlier builds also offered
+ * auto-resurface, a voice, quiet hours, place triggers and a weekly look-back;
+ * every one of them stored a value that nothing ever read, so a promise was
+ * being made here that no code kept.
  */
 export const settingDefs: SettingDef[] = [
   {
@@ -71,36 +53,6 @@ export const settingDefs: SettingDef[] = [
     desc: 'When the day gets reconstructed for you.',
     options: sweepTimes,
     pick: true,
-  },
-  {
-    key: 'autoResurface',
-    label: 'Auto-resurface',
-    desc: 'Anything untouched for two days comes back on its own.',
-    options: ['On', 'Off'],
-  },
-  {
-    key: 'tone',
-    label: 'Voice',
-    desc: 'How the app talks to you when you have missed things.',
-    options: ['Warm', 'Plain', 'Blunt'],
-  },
-  {
-    key: 'silentHours',
-    label: 'Quiet after 22:30',
-    desc: 'Nudges hold until morning. The sweep still runs.',
-    options: ['On', 'Off'],
-  },
-  {
-    key: 'location',
-    label: 'Place triggers',
-    desc: 'Home and desk items surface when you arrive.',
-    options: ['On', 'Off'],
-  },
-  {
-    key: 'weeklyReview',
-    label: 'Weekly look-back',
-    desc: 'A longer sweep for what fell through the whole week.',
-    options: ['Sun', 'Fri', 'Off'],
   },
   {
     key: 'appearance',

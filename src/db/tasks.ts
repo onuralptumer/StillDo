@@ -2,7 +2,7 @@
  * @format
  */
 
-import type { NudgeKey, Origin, Task, TaskStatus } from '../types';
+import type { Origin, Task, TaskStatus } from '../types';
 import type { SqlDriver, SqlValue } from './driver';
 
 type Row = {
@@ -10,7 +10,6 @@ type Row = {
   title: string;
   note: string;
   caught_at: number;
-  nudge: string;
   status: string;
   source: string;
   origin: string;
@@ -23,7 +22,6 @@ const toTask = (r: Row): Task => ({
   title: r.title,
   note: r.note,
   caught: r.caught_at,
-  nudge: r.nudge as NudgeKey,
   status: r.status as TaskStatus,
   source: r.source,
   from: r.origin as Origin,
@@ -43,15 +41,14 @@ export async function allTasks(db: SqlDriver): Promise<Task[]> {
 export async function insertTask(db: SqlDriver, task: Task): Promise<void> {
   await db.execute(
     `INSERT INTO tasks
-       (id, title, note, caught_at, nudge, status, source,
+       (id, title, note, caught_at, status, source,
         origin, photo_uri, defer_until)
-     VALUES (?,?,?,?,?,?,?,?,?,?)`,
+     VALUES (?,?,?,?,?,?,?,?,?)`,
     [
       task.id,
       task.title,
       task.note,
       task.caught,
-      task.nudge,
       task.status,
       task.source,
       task.from,
@@ -66,7 +63,6 @@ const COLUMN: Partial<Record<keyof Task, string>> = {
   title: 'title',
   note: 'note',
   caught: 'caught_at',
-  nudge: 'nudge',
   status: 'status',
   source: 'source',
   from: 'origin',

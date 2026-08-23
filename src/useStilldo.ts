@@ -15,7 +15,6 @@ import type { SqlDriver } from './db/driver';
 import { allSettings, putSetting } from './db/settings';
 import { allTasks, insertTask, updateTask } from './db/tasks';
 import type {
-  NudgeKey,
   Origin,
   Screen,
   SettingKey,
@@ -80,7 +79,6 @@ const newTask = (
   title,
   note,
   caught: Date.now(),
-  nudge: 'gentle',
   status: 'open',
   source,
   from: 'inbox' as Origin,
@@ -225,11 +223,6 @@ export function useStilldo(db: SqlDriver | null) {
     setState(s => ({ ...s, draft: '' }));
   }, [add, takeId]);
 
-  const setNudge = useCallback(
-    (id: number, nudge: NudgeKey) => patch(id, { nudge }),
-    [patch],
-  );
-
   /** Resolve the detail item and drop back to wherever it was opened from. */
   const resolve = useCallback(
     (id: number, status: TaskStatus) => {
@@ -305,7 +298,6 @@ export function useStilldo(db: SqlDriver | null) {
       setDraft,
       addFromDraft,
       capture,
-      setNudge,
       resolve,
       advance,
       setSetting,

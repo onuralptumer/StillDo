@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { FilledButton, LinkButton } from '../components/controls';
 import {
@@ -13,9 +13,8 @@ import {
   Lead,
 } from '../components/primitives';
 import { Snapshot } from '../components/Snapshot';
-import { nudgeOptions } from '../data';
 import { stamp } from '../date';
-import { font, radius, space } from '../theme';
+import { font, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
 
 const styles = StyleSheet.create({
@@ -39,29 +38,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.77,
     textTransform: 'uppercase',
   },
-  nudgeList: {
-    marginTop: 14,
-    gap: 9,
-  },
-  nudge: {
-    borderWidth: 1,
-    borderRadius: radius.pill,
-    paddingVertical: 13,
-    paddingHorizontal: 18,
-    gap: 6,
-  },
-  nudgeLabel: {
-    fontFamily: font.medium,
-    fontSize: 11,
-    letterSpacing: 0.99,
-    textTransform: 'uppercase',
-  },
-  nudgeDesc: {
-    fontFamily: font.regular,
-    fontSize: 12,
-    lineHeight: 15.1,
-    opacity: 0.6,
-  },
   actions: {
     flexDirection: 'row',
     gap: 12,
@@ -84,7 +60,6 @@ const Spec = ({ label, value }: { label: string; value: string }) => {
 };
 
 export const DetailScreen = ({ s }: { s: Stilldo }) => {
-  const c = useTheme();
   const d = s.detail;
   if (!d) return null;
   const done = d.status === 'done';
@@ -99,34 +74,6 @@ export const DetailScreen = ({ s }: { s: Stilldo }) => {
 
       <DashedRule marginTop={space.section} />
       <Spec label="Caught" value={stamp(d.caught)} />
-
-      <Kicker style={{ marginTop: space.section }}>
-        How hard should I push?
-      </Kicker>
-      <View style={styles.nudgeList}>
-        {nudgeOptions.map(n => {
-          const on = d.nudge === n.key;
-          return (
-            <Pressable
-              key={n.key}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: on }}
-              onPress={() => s.actions.setNudge(d.id, n.key)}
-              style={({ pressed }) => [
-                styles.nudge,
-                {
-                  borderColor: on ? c.ink : c.line,
-                  backgroundColor: pressed ? c.tint : 'transparent',
-                },
-              ]}>
-              <Text style={[styles.nudgeLabel, { color: c.ink }]}>
-                {n.label}
-              </Text>
-              <Text style={[styles.nudgeDesc, { color: c.ink }]}>{n.desc}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
 
       <View style={styles.actions}>
         <FilledButton

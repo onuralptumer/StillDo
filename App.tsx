@@ -22,7 +22,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import { TabBar } from './src/components/TabBar';
+import { TAB_BAR_HEIGHT, TabBar } from './src/components/TabBar';
 import { Kicker, Lead } from './src/components/primitives';
 import { useDatabase } from './src/db/useDatabase';
 import { ThemeProvider } from './src/components/ThemeContext';
@@ -35,6 +35,7 @@ import { TodayScreen } from './src/screens/TodayScreen';
 import { dark, font, light, space } from './src/theme';
 import type { Screen } from './src/types';
 import { useStilldo } from './src/useStilldo';
+import { useSweepAlarm } from './src/useSweepAlarm';
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
@@ -53,6 +54,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   scroll: { flex: 1 },
+  // The bar floats over the page, so the page has to be able to scroll clear
+  // of it rather than end behind it.
+  scrollBody: { paddingBottom: TAB_BAR_HEIGHT + 28 },
+  floating: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+  },
   centre: {
     flex: 1,
     alignItems: 'flex-start',
@@ -62,7 +71,7 @@ const styles = StyleSheet.create({
   },
   fault: {
     paddingHorizontal: space.gutter,
-    paddingBottom: 12,
+    paddingBottom: 10,
   },
   faultText: {
     fontFamily: font.medium,
@@ -96,6 +105,11 @@ function AppContent() {
   // The intro owns the whole frame: no tabs to wander off into mid-sentence.
   const onboarding = s.ready && s.settings.onboarded !== 'yes';
 
+  // The prompt belongs at the moment you reach for the thing, and the last
+  // pane of the intro is where the sweep time gets chosen — so ask as soon
+  // as that is done, rather than over the top of it.
+  const alarm = useSweepAlarm(s.settings.sweepTime, s.ready && !onboarding);
+
   return (
     <ThemeProvider palette={c}>
       <StatusBar
@@ -128,22 +142,29 @@ function AppContent() {
             <ScrollView
               ref={scroller}
               style={styles.scroll}
+              contentContainerStyle={styles.scrollBody}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag">
               {s.screen === 'today' && <TodayScreen s={s} />}
               {s.screen === 'inbox' && <InboxScreen s={s} />}
               {s.screen === 'detail' && <DetailScreen s={s} />}
               {s.screen === 'sweep' && <SweepScreen s={s} />}
-              {s.screen === 'settings' && <SettingsScreen s={s} />}
+              {s.screen === 'settings' && (
+                <SettingsScreen s={s} alarm={alarm} />
+              )}
             </ScrollView>
           </KeyboardAvoidingView>
         )}
 
-        <View style={{ paddingBottom: Math.max(insets.bottom, 10) }}>
-          {!!s.dbError && (
+        <View
+          pointerEvents="box-none"
+          style={[styles.floating, { bottom: Math.max(insets.bottom, 12) }]}>
+          {!!(s.dbError || alarm.error) && (
             <View style={styles.fault}>
               <Text style={[styles.faultText, { color: c.accent }]}>
-                Not saved — {s.dbError}
+                {s.dbError
+                  ? `Not saved — ${s.dbError}`
+                  : `Sweep alarm — ${alarm.error}`}
               </Text>
             </View>
           )}

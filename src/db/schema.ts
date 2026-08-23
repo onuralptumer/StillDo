@@ -68,6 +68,15 @@ export const MIGRATIONS: string[][] = [
   // "No date yet" into it and nothing ever changed it, so both places that
   // showed it said the same meaningless thing forever.
   [`ALTER TABLE tasks DROP COLUMN due`],
+  // The nudge — gentle, insistent, alarm — was a promise nothing could keep:
+  // the app has no notifications, so choosing "alarm" only tinted a dot. Five
+  // settings were the same shape (auto-resurface, voice, quiet hours, place
+  // triggers, the weekly look-back): stored, shown, never read. Both go.
+  [
+    `ALTER TABLE tasks DROP COLUMN nudge`,
+    `DELETE FROM settings WHERE key IN
+       ('autoResurface', 'tone', 'silentHours', 'location', 'weeklyReview')`,
+  ],
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length;

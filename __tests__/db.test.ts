@@ -115,7 +115,6 @@ test('renamed fields map onto their columns', async () => {
     title: 'Ring the vet',
     note: 'n',
     caught: 1_755_000_000_000,
-    nudge: 'gentle',
     status: 'open',
     source: 'Typed',
     from: 'inbox',
@@ -151,6 +150,8 @@ test('the dead display-only columns are gone', async () => {
   expect(columns).not.toContain('place');
   expect(columns).not.toContain('slips');
   expect(columns).not.toContain('due');
+  // The nudge went the same way: nothing could act on it.
+  expect(columns).not.toContain('nudge');
   expect(columns).toContain('caught_at');
   expect(columns).not.toContain('created_at');
   db.close();
@@ -175,10 +176,10 @@ test('a partial update touches only the fields it was given', async () => {
   const db = await stocked();
   const before = (await allTasks(db)).find(t => t.id === 2)!;
 
-  await updateTask(db, 2, { status: 'done', nudge: 'alarm' });
+  await updateTask(db, 2, { status: 'done', source: 'Typed' });
 
   const after = (await allTasks(db)).find(t => t.id === 2)!;
-  expect(after).toEqual({ ...before, status: 'done', nudge: 'alarm' });
+  expect(after).toEqual({ ...before, status: 'done', source: 'Typed' });
   db.close();
 });
 
@@ -234,5 +235,44 @@ test('the frozen "just now" phrase is cleaned out of older rows', async () => {
   expect(byId.get(301)).toBe('Voice');
   // A source that never carried the phrase is left alone.
   expect(byId.get(302)).toBe('Missed call');
+  db.close();
+});
+
+test('upgrading strips the nudge and the settings nothing ever read', async () => {
+  const db = nodeDriver();
+  // A version-5 database, written by the build that still had all of them.
+  for (const set of MIGRATIONS.slice(0, 5)) {
+    for (const statement of set) await db.execute(statement);
+  }
+  await db.execute('PRAGMA user_version = 5');
+  await db.execute(
+    `INSERT INTO tasks (id, title, nudge, origin, caught_at)
+     VALUES (?,?,?,?,?)`,
+    [500, 'Ring the vet', 'alarm', 'inbox', 1_755_000_000_000],
+  );
+  for (const [key, value] of [
+    ['autoResurface', 'Off'],
+    ['tone', 'Blunt'],
+    ['silentHours', 'Off'],
+    ['location', 'Off'],
+    ['weeklyReview', 'Fri'],
+    ['sweepTime', '19:30'],
+  ]) {
+    await putSetting(db, key, value);
+  }
+
+  await migrate(db);
+
+  // The task itself is untouched — only the column it could not act on is gone.
+  const [task] = await allTasks(db);
+  expect(task.title).toBe('Ring the vet');
+  expect('nudge' in task).toBe(false);
+
+  const keys = (
+    await db.execute<{ key: string }>('SELECT key FROM settings')
+  ).map(r => r.key);
+  expect(keys.sort()).toEqual(['sweepTime']);
+  // A choice the app still honours is not collateral damage.
+  expect((await allSettings(db)).sweepTime).toBe('19:30');
   db.close();
 });
