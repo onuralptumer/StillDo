@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The one card off the top of Today. Colours are pushed in by the provider. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_surface_dark"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/now_kicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_right_now"
+        android:textAllCaps="true"
+        android:textSize="10sp"
+        android:letterSpacing="0.1"
+        android:fontFamily="@font/hankengrotesk_medium"
+        android:textColor="#6C5F51" />
+
+    <TextView
+        android:id="@+id/now_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="true"
+        android:textSize="19sp"
+        android:letterSpacing="0.03"
+        android:lineSpacingMultiplier="1.05"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:fontFamily="@font/hankengrotesk_medium"
+        android:textColor="#FFEDD7" />
+
+    <TextView
+        android:id="@+id/now_note"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:textSize="13sp"
+        android:alpha="0.75"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:fontFamily="@font/hankengrotesk_regular"
+        android:textColor="#FFEDD7" />
+
+    <TextView
+        android:id="@+id/now_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAllCaps="true"
+        android:textSize="9sp"
+        android:letterSpacing="0.09"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:fontFamily="@font/hankengrotesk_medium"
+        android:textColor="#DC5000" />
+</LinearLayout>

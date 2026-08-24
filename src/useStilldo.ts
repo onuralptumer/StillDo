@@ -23,6 +23,7 @@ import type {
   TaskStatus,
   Verdict,
 } from './types';
+import type { CaptureKind, WidgetLink } from './widgets/links';
 
 type State = {
   /** False until the first read of the database has landed. */
@@ -40,6 +41,18 @@ type State = {
   sweepQueue: number[];
   sweepIdx: number;
   sweepLog: Verdict[];
+  /**
+   * A capture a widget asked for, waiting for the Inbox to reach the hardware
+   * for it. The screen that owns the microphone and the camera is the one that
+   * can start them, so the request is parked here until it renders.
+   */
+  pendingCapture: CaptureKind | null;
+  /**
+   * A widget tap that arrived before the first read landed. Routing it then
+   * would have nothing to route against — the "right now" task is not known
+   * yet — so it waits here for one.
+   */
+  pendingLink: WidgetLink | null;
   settings: Settings;
   tasks: Task[];
 };
@@ -54,6 +67,8 @@ const initial: State = {
   sweepQueue: [],
   sweepIdx: 0,
   sweepLog: [],
+  pendingCapture: null,
+  pendingLink: null,
   settings: seedSettings,
   tasks: [],
 };
@@ -205,6 +220,68 @@ export function useStilldo(db: SqlDriver | null) {
     setState(s => ({ ...s, screen: s.prev }));
   }, []);
 
+  /**
+   * Where a widget tap lands.
+   *
+   * A capture request only gets as far as the Inbox: the microphone and the
+   * camera belong to that screen, and it starts them once it is on.
+   */
+  const apply = useCallback(
+    (link: WidgetLink) => {
+      // The intro owns the whole frame and has its own first thing to do. A
+      // widget tapped before the app has ever been opened is answered by the
+      // intro, not by the camera coming up behind it.
+      if (stateRef.current.settings.onboarded !== 'yes') return;
+
+      if (link.kind === 'capture') {
+        setState(s => ({ ...s, screen: 'inbox', pendingCapture: link.how }));
+        return;
+      }
+      if (link.kind === 'sweep') {
+        startSweep();
+        return;
+      }
+      // 'now' — the task the widget was showing, which is the first thing
+      // still due. Back from here goes to Today rather than to wherever the
+      // app happened to be left, because Today is where that card lives.
+      const first = stateRef.current.tasks.filter(t => isDue(t, today))[0];
+      setState(s =>
+        first
+          ? { ...s, screen: 'detail', prev: 'today', detailId: first.id }
+          : { ...s, screen: 'today' },
+      );
+    },
+    [startSweep, today],
+  );
+
+  /**
+   * Follow a widget's URL. Held until the first read has landed — routing
+   * "right now" against an empty task list would send every cold launch from
+   * that widget to an empty Today instead of to the task it was showing.
+   */
+  const follow = useCallback(
+    (link: WidgetLink) => {
+      if (!stateRef.current.ready) {
+        setState(s => ({ ...s, pendingLink: link }));
+        return;
+      }
+      apply(link);
+    },
+    [apply],
+  );
+
+  useEffect(() => {
+    if (!state.ready || !state.pendingLink) return;
+    const link = state.pendingLink;
+    setState(s => ({ ...s, pendingLink: null }));
+    apply(link);
+  }, [state.ready, state.pendingLink, apply]);
+
+  /** The Inbox has taken the request; it is no longer outstanding. */
+  const clearCapture = useCallback(() => {
+    setState(s => (s.pendingCapture ? { ...s, pendingCapture: null } : s));
+  }, []);
+
   const setDraft = useCallback((draft: string) => {
     setState(s => ({ ...s, draft }));
   }, []);
@@ -294,6 +371,8 @@ export function useStilldo(db: SqlDriver | null) {
       go,
       open,
       back,
+      follow,
+      clearCapture,
       startSweep,
       setDraft,
       addFromDraft,

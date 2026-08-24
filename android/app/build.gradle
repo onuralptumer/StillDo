@@ -72,6 +72,24 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+/**
+ * The widgets are drawn by the launcher out of RemoteViews, which can only
+ * reach a typeface through a font *resource* — the app's own `assets/fonts`
+ * are invisible to it. Those files are already the one copy in the repo, and
+ * their names are not legal resource identifiers, so they are copied in under
+ * names that are rather than being committed a second time.
+ */
+def widgetFontsDir = layout.buildDirectory.dir("generated/res/widgetFonts")
+
+def widgetFonts = tasks.register("widgetFonts", Copy) {
+    from("$rootDir/../assets/fonts") {
+        include "HankenGrotesk-Medium.ttf"
+        include "HankenGrotesk-Regular.ttf"
+    }
+    into widgetFontsDir.map { it.dir("font") }
+    rename { it.toLowerCase().replace("-", "_") }
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -84,6 +102,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+    }
+    sourceSets {
+        main {
+            res.srcDirs += widgetFontsDir
+        }
     }
     signingConfigs {
         debug {
@@ -105,6 +128,10 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
+}
+
+tasks.withType(com.android.build.gradle.tasks.MergeResources).configureEach {
+    dependsOn widgetFonts
 }
 
 dependencies {

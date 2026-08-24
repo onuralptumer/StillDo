@@ -2,7 +2,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import {
@@ -74,6 +74,13 @@ const styles = StyleSheet.create({
 
 export const InboxScreen = ({ s }: { s: Stilldo }) => {
   const c = useTheme();
+  const field = useRef<React.ComponentRef<typeof TextInput>>(null);
+  /**
+   * The microphone was opened by a widget rather than by a finger held on the
+   * button, so there is no release coming to close it. It stays open until it
+   * is tapped shut or the recogniser hears the sentence end.
+   */
+  const [handsFree, setHandsFree] = useState(false);
 
   const voice = useVoiceCapture(text =>
     s.actions.capture(
@@ -91,6 +98,34 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
       uri,
     ),
   );
+  /**
+   * A widget tap arrives as a request on the store, because this is the screen
+   * that holds the microphone and the camera. Take it once, then let go of it
+   * — leaving it set would reopen the camera on every render.
+   */
+  const pending = s.pendingCapture;
+  useEffect(() => {
+    if (!pending) return;
+    s.actions.clearCapture();
+    if (pending === 'voice') {
+      setHandsFree(true);
+      voice.start();
+    } else if (pending === 'photo') {
+      photo.shoot();
+    } else {
+      field.current?.focus();
+    }
+    // Only the arrival of a request should run this. The capture hooks are
+    // rebuilt on every render, and depending on them would fire it again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending]);
+
+  // Whatever ended the recogniser — a tap, a silence, a failure — the button
+  // goes back to being one you hold.
+  useEffect(() => {
+    if (!voice.listening) setHandsFree(false);
+  }, [voice.listening]);
+
   const status = voice.listening
     ? voice.partial
     : voice.error || photo.error || '';
@@ -110,6 +145,7 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
 
       <View style={[styles.field, { borderBottomColor: c.ink }]}>
         <TextInput
+          ref={field}
           value={s.draft}
           onChangeText={s.actions.setDraft}
           onSubmitEditing={s.actions.addFromDraft}
@@ -131,16 +167,24 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
       </View>
 
       <View style={styles.capture}>
-        <HoldButton
-          label="Hold to speak"
-          holdingLabel="Listening…"
-          holding={voice.listening}
-          onPressIn={() => {
-            photo.dismissError();
-            voice.start();
-          }}
-          onPressOut={voice.stop}
-        />
+        {handsFree ? (
+          <OutlineButton
+            size="sm"
+            label="Tap to catch it"
+            onPress={voice.stop}
+          />
+        ) : (
+          <HoldButton
+            label="Hold to speak"
+            holdingLabel="Listening…"
+            holding={voice.listening}
+            onPressIn={() => {
+              photo.dismissError();
+              voice.start();
+            }}
+            onPressOut={voice.stop}
+          />
+        )}
         <OutlineButton
           size="sm"
           variant="quiet"
@@ -156,7 +200,7 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
         <View style={styles.status}>
           {voice.listening && (
             <Text style={[styles.statusLabel, { color: c.accent }]}>
-              Release to catch it
+              {handsFree ? 'Listening — tap to catch it' : 'Release to catch it'}
             </Text>
           )}
           {!!status && (

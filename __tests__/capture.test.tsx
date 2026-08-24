@@ -11,6 +11,7 @@ import { InboxScreen } from '../src/screens/InboxScreen';
 import { useStilldo, type Stilldo } from '../src/useStilldo';
 import { nodeDriver } from '../testing/nodeDriver';
 import { prepare } from '../src/db/schema';
+import { putSetting } from '../src/db/settings';
 import { useVoiceCapture, type VoiceCapture } from '../src/useVoiceCapture';
 
 const act = ReactTestRenderer.act;
@@ -253,4 +254,95 @@ test('the typed draft is added by the plus, which still names itself', async () 
     'book the mot',
   );
   expect(ref.current.draft).toBe('');
+});
+
+/**
+ * The Inbox, opened by a widget rather than by hand. The store parks the
+ * request; this screen is the one that can reach the microphone and the camera.
+ */
+async function mountInboxPastIntro() {
+  const db = nodeDriver();
+  await prepare(db);
+  // `follow` holds a widget tap back until the intro has been through once.
+  await putSetting(db, 'onboarded', 'yes');
+
+  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
+  let tree: ReactTestRenderer.ReactTestRenderer;
+  const Host = () => {
+    const s = useStilldo(db);
+    ref.current = s;
+    return <InboxScreen s={s} />;
+  };
+  await act(async () => {
+    tree = ReactTestRenderer.create(<Host />);
+  });
+  return { ref, tree: tree! };
+}
+
+test('the voice widget opens the app already listening, with no hold to make', async () => {
+  const { ref, tree } = await mountInboxPastIntro();
+
+  await act(async () =>
+    ref.current.actions.follow({ kind: 'capture', how: 'voice' }),
+  );
+
+  expect(Voice.start).toHaveBeenCalledWith('en-US');
+  // Taken once and let go of, so the next render does not start it again.
+  expect(ref.current.pendingCapture).toBeNull();
+
+  // There is no finger on the button to release, so the button becomes the
+  // way to close the recogniser instead.
+  const stop = button(tree, 'Tap to catch it');
+  expect(stop).toBeTruthy();
+
+  act(() => handlers().onSpeechResults({ value: ['the loft hatch thing'] }));
+  act(() => handlers().onSpeechEnd({}));
+
+  const added = ref.current.tasks[ref.current.tasks.length - 1];
+  expect(added.title).toBe('the loft hatch thing');
+  expect(added.source).toBe('Voice');
+  // ...and it goes back to being a button you hold.
+  expect(button(tree, 'Hold to speak')).toBeTruthy();
+});
+
+test('the snap widget goes straight to the camera, without asking again', async () => {
+  (launchCamera as jest.Mock).mockResolvedValueOnce({
+    assets: [{ uri: 'file:///tmp/form.jpg' }],
+  });
+  const { ActionSheetIOS } = require('react-native');
+  const sheet = jest
+    .spyOn(ActionSheetIOS, 'showActionSheetWithOptions')
+    .mockImplementation(() => {});
+
+  const { ref } = await mountInboxPastIntro();
+  await act(async () =>
+    ref.current.actions.follow({ kind: 'capture', how: 'photo' }),
+  );
+
+  // The widget's own button already made the choice the sheet would offer.
+  expect(sheet).not.toHaveBeenCalled();
+  expect(launchCamera).toHaveBeenCalled();
+
+  const added = ref.current.tasks[ref.current.tasks.length - 1];
+  expect(added.photoUri).toBe('file:///tmp/form.jpg');
+  sheet.mockRestore();
+});
+
+test('the text widget opens the app with the cursor in the field', async () => {
+  // Earlier tests in this file have reached for both; only this run counts.
+  (Voice.start as jest.Mock).mockClear();
+  (launchCamera as jest.Mock).mockClear();
+
+  const { ref, tree } = await mountInboxPastIntro();
+
+  const field = tree.root.findByProps({ placeholder: 'ADD A TASK' });
+  const focus = jest.spyOn(field.instance as { focus: () => void }, 'focus');
+
+  await act(async () =>
+    ref.current.actions.follow({ kind: 'capture', how: 'text' }),
+  );
+
+  expect(focus).toHaveBeenCalled();
+  expect(Voice.start).not.toHaveBeenCalled();
+  expect(launchCamera).not.toHaveBeenCalled();
 });

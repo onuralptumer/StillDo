@@ -38,6 +38,9 @@ import { dark, font, light, space } from './src/theme';
 import type { Screen } from './src/types';
 import { useStilldo } from './src/useStilldo';
 import { useSweepAlarm } from './src/useSweepAlarm';
+import { buildSnapshot } from './src/widgets/snapshot';
+import { useDeepLink } from './src/widgets/useDeepLink';
+import { useWidgetSync } from './src/widgets/useWidgetSync';
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
@@ -109,6 +112,27 @@ function AppContent() {
   // pane of the intro is where the sweep time gets chosen — so ask as soon
   // as that is done, rather than over the top of it.
   const alarm = useSweepAlarm(s.settings.sweepTime, s.ready && !onboarding);
+
+  /*
+    The home- and lock-screen widgets run in their own process and cannot open
+    the app's database, so they are given a summary of it instead — rewritten
+    here whenever what they show changes. Nothing is published until the first
+    read has landed, or a cold start would blank them before filling them in.
+  */
+  const snapshot = useMemo(
+    () =>
+      s.ready
+        ? buildSnapshot({
+            dueTasks: s.dueTasks,
+            tasks: s.tasks,
+            settings: s.settings,
+          })
+        : null,
+    [s.ready, s.dueTasks, s.tasks, s.settings],
+  );
+  useWidgetSync(snapshot);
+  // And the way back in: the URL a widget was tapped with.
+  useDeepLink(s.actions.follow);
 
   return (
     <ThemeProvider palette={c}>

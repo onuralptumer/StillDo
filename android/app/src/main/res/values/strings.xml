@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">StillDo</string>
+
+    <!-- The widgets. The layouts hold the fixed words; the provider pushes in
+         everything that depends on what the app knows. -->
+    <string name="widget_wordmark">Stilldo</string>
+    <string name="widget_right_now">Right now</string>
+    <string name="widget_say_it">Say it</string>
+    <string name="widget_speak_it">Speak it</string>
+    <string name="widget_write_it">Write it</string>
+    <string name="widget_type_it">Type it</string>
+    <string name="widget_show_it">Show it</string>
+    <string name="widget_snap_it">Snap it</string>
+    <string name="widget_quick_capture_description">Catch it out loud, in a line, or as a picture — without opening the app first.</string>
+    <string name="widget_right_now_description">The one thing off the top of Today, and nothing else.</string>
 </resources>

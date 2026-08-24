@@ -45,6 +45,41 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <!-- What the widgets open the app with; parsed by src/widgets/links.ts.
+             The activity is singleTask, so a tap while the app is already in
+             memory arrives at onNewIntent rather than starting a second copy. -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="stilldo" />
+        </intent-filter>
       </activity>
+
+      <!-- The home-screen widgets. Android has no lock-screen widgets to place
+           these on: keyguard widgets were removed in Android 5, and what came
+           back in Android 15 is tablet-only. The lock screen half of this
+           feature is iOS. -->
+      <receiver
+          android:name=".widgets.QuickCaptureWidget"
+          android:exported="false">
+          <intent-filter>
+              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+          </intent-filter>
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/widget_quick_capture_info" />
+      </receiver>
+
+      <receiver
+          android:name=".widgets.RightNowWidget"
+          android:exported="false">
+          <intent-filter>
+              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+          </intent-filter>
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/widget_right_now_info" />
+      </receiver>
     </application>
 </manifest>

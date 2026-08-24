@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Quick capture, at the size the three tiles need to stay readable.
+
+    Every colour here is a placeholder: the provider resolves the palette and
+    pushes it in, because a widget is drawn by the launcher and cannot inherit
+    the app's theme.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_surface_dark"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <TextView
+            android:id="@+id/quick_wordmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/widget_wordmark"
+            android:textAllCaps="true"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:fontFamily="@font/hankengrotesk_medium"
+            android:textColor="#DC5000" />
+
+        <TextView
+            android:id="@+id/quick_caught"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/hankengrotesk_medium"
+            android:textColor="#6C5F51" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:id="@+id/quick_voice"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@drawable/widget_tile_dark"
+            android:padding="12dp">
+            <TextView
+                android:id="@+id/quick_voice_kicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_say_it"
+                android:textAllCaps="true"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#6C5F51" />
+            <TextView
+                android:id="@+id/quick_voice_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/widget_speak_it"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:letterSpacing="0.05"
+                android:maxLines="1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#FFEDD7" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/quick_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="9dp"
+            android:orientation="vertical"
+            android:background="@drawable/widget_tile_dark"
+            android:padding="12dp">
+            <TextView
+                android:id="@+id/quick_text_kicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_write_it"
+                android:textAllCaps="true"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#6C5F51" />
+            <TextView
+                android:id="@+id/quick_text_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/widget_type_it"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:letterSpacing="0.05"
+                android:maxLines="1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#FFEDD7" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/quick_photo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="9dp"
+            android:orientation="vertical"
+            android:background="@drawable/widget_tile_dark"
+            android:padding="12dp">
+            <TextView
+                android:id="@+id/quick_photo_kicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_show_it"
+                android:textAllCaps="true"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#6C5F51" />
+            <TextView
+                android:id="@+id/quick_photo_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/widget_snap_it"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:letterSpacing="0.05"
+                android:maxLines="1"
+                android:fontFamily="@font/hankengrotesk_medium"
+                android:textColor="#FFEDD7" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

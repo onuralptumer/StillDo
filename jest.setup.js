@@ -58,3 +58,11 @@ jest.mock('lottie-react-native', () => {
     default: (props) => React.createElement(View, { ...props, testID: 'lottie' }),
   };
 });
+
+// The widget bridge is native on both platforms. `src/widgets/native.ts` reads
+// this off NativeModules at import time, so the stand-in has to be in place
+// before any test module loads; the tests assert on what was published to it.
+const { NativeModules } = require('react-native');
+NativeModules.StilldoWidgets = {
+  publish: jest.fn(() => Promise.resolve()),
+};

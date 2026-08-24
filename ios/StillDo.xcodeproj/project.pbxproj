@@ -15,7 +15,46 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A625E0A6F48442678DBE935B /* HankenGrotesk-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D083088712A0410EBFA522A4 /* HankenGrotesk-Medium.ttf */; };
+		DA5100000000000000000014 /* WidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000001 /* WidgetStore.swift */; };
+		DA5100000000000000000015 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000002 /* Palette.swift */; };
+		DA5100000000000000000016 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000003 /* Provider.swift */; };
+		DA5100000000000000000017 /* QuickCaptureWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000004 /* QuickCaptureWidget.swift */; };
+		DA5100000000000000000018 /* RightNowWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000005 /* RightNowWidget.swift */; };
+		DA5100000000000000000019 /* LockScreenCaptureWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000006 /* LockScreenCaptureWidgets.swift */; };
+		DA510000000000000000001A /* StilldoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000007 /* StilldoWidgetBundle.swift */; };
+		DA510000000000000000001F /* WidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000001 /* WidgetStore.swift */; };
+		DA5100000000000000000020 /* StilldoWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000C /* StilldoWidgets.swift */; };
+		DA5100000000000000000021 /* StilldoWidgets.m in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000D /* StilldoWidgets.m */; };
+		DA510000000000000000001B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000A /* PrivacyInfo.xcprivacy */; };
+		DA510000000000000000001C /* HankenGrotesk-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D083088712A0410EBFA522A4 /* HankenGrotesk-Medium.ttf */; };
+		DA510000000000000000001D /* HankenGrotesk-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13D9960C57CF473EA6DEE27A /* HankenGrotesk-SemiBold.ttf */; };
+		DA510000000000000000001E /* HankenGrotesk-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 554DB2DFCD87454D83D625D5 /* HankenGrotesk-Regular.ttf */; };
+		DA5100000000000000000022 /* StilldoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000B /* StilldoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DA5100000000000000000037 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA5100000000000000000032;
+			remoteInfo = StilldoWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DA5100000000000000000036 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				DA5100000000000000000022 /* StilldoWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* StillDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StillDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -31,6 +70,20 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = StillDo/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D083088712A0410EBFA522A4 /* HankenGrotesk-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "HankenGrotesk-Medium.ttf"; path = "../assets/fonts/HankenGrotesk-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		DA5100000000000000000001 /* WidgetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStore.swift; sourceTree = "<group>"; };
+		DA5100000000000000000002 /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
+		DA5100000000000000000003 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
+		DA5100000000000000000004 /* QuickCaptureWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickCaptureWidget.swift; sourceTree = "<group>"; };
+		DA5100000000000000000005 /* RightNowWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightNowWidget.swift; sourceTree = "<group>"; };
+		DA5100000000000000000006 /* LockScreenCaptureWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenCaptureWidgets.swift; sourceTree = "<group>"; };
+		DA5100000000000000000007 /* StilldoWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StilldoWidgetBundle.swift; sourceTree = "<group>"; };
+		DA5100000000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA5100000000000000000009 /* StilldoWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StilldoWidgets.entitlements; sourceTree = "<group>"; };
+		DA510000000000000000000A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		DA510000000000000000000B /* StilldoWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StilldoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA510000000000000000000C /* StilldoWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StilldoWidgets.swift; path = StillDo/StilldoWidgets.swift; sourceTree = "<group>"; };
+		DA510000000000000000000D /* StilldoWidgets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StilldoWidgets.m; path = StillDo/StilldoWidgets.m; sourceTree = "<group>"; };
+		DA510000000000000000000E /* StillDo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StillDo.entitlements; path = StillDo/StillDo.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +92,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-StillDo.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA5100000000000000000034 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +123,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				DA510000000000000000000C /* StilldoWidgets.swift */,
+				DA510000000000000000000D /* StilldoWidgets.m */,
+				DA510000000000000000000E /* StillDo.entitlements */,
 			);
 			name = StillDo;
 			sourceTree = "<group>";
@@ -87,6 +150,8 @@
 			isa = PBXGroup;
 			children = (
 				13B07FAE1A68108700A75B9A /* StillDo */,
+				DA5100000000000000000028 /* StilldoWidgets */,
+				DA5100000000000000000029 /* StilldoShared */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -102,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* StillDo.app */,
+				DA510000000000000000000B /* StilldoWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,6 +179,30 @@
 				5709B34CF0A7D63546082F79 /* Pods-StillDo.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DA5100000000000000000028 /* StilldoWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				DA5100000000000000000007 /* StilldoWidgetBundle.swift */,
+				DA5100000000000000000004 /* QuickCaptureWidget.swift */,
+				DA5100000000000000000005 /* RightNowWidget.swift */,
+				DA5100000000000000000006 /* LockScreenCaptureWidgets.swift */,
+				DA5100000000000000000003 /* Provider.swift */,
+				DA5100000000000000000002 /* Palette.swift */,
+				DA5100000000000000000008 /* Info.plist */,
+				DA510000000000000000000A /* PrivacyInfo.xcprivacy */,
+				DA5100000000000000000009 /* StilldoWidgets.entitlements */,
+			);
+			path = StilldoWidgets;
+			sourceTree = "<group>";
+		};
+		DA5100000000000000000029 /* StilldoShared */ = {
+			isa = PBXGroup;
+			children = (
+				DA5100000000000000000001 /* WidgetStore.swift */,
+			);
+			path = StilldoShared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,15 +219,34 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				DA5100000000000000000036 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DA5100000000000000000038 /* PBXTargetDependency */,
 			);
 			name = StillDo;
 			productName = StillDo;
 			productReference = 13B07F961A680F5B00A75B9A /* StillDo.app */;
 			productType = "com.apple.product-type.application";
+		};
+		DA5100000000000000000032 /* StilldoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA510000000000000000003B /* Build configuration list for PBXNativeTarget "StilldoWidgets" */;
+			buildPhases = (
+				DA5100000000000000000033 /* Sources */,
+				DA5100000000000000000034 /* Frameworks */,
+				DA5100000000000000000035 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StilldoWidgets;
+			productName = StilldoWidgets;
+			productReference = DA510000000000000000000B /* StilldoWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -149,6 +258,9 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
+					};
+					DA5100000000000000000032 = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -166,6 +278,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* StillDo */,
+				DA5100000000000000000032 /* StilldoWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -181,6 +294,17 @@
 				A625E0A6F48442678DBE935B /* HankenGrotesk-Medium.ttf in Resources */,
 				38136236396A49CAA50EE6AC /* HankenGrotesk-SemiBold.ttf in Resources */,
 				03E30CF95DB24735AFCF88A4 /* HankenGrotesk-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA5100000000000000000035 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA510000000000000000001B /* PrivacyInfo.xcprivacy in Resources */,
+				DA510000000000000000001C /* HankenGrotesk-Medium.ttf in Resources */,
+				DA510000000000000000001D /* HankenGrotesk-SemiBold.ttf in Resources */,
+				DA510000000000000000001E /* HankenGrotesk-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,10 +391,35 @@
 			buildActionMask = 2147483647;
 			files = (
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				DA5100000000000000000020 /* StilldoWidgets.swift in Sources */,
+				DA5100000000000000000021 /* StilldoWidgets.m in Sources */,
+				DA510000000000000000001F /* WidgetStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA5100000000000000000033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA510000000000000000001A /* StilldoWidgetBundle.swift in Sources */,
+				DA5100000000000000000017 /* QuickCaptureWidget.swift in Sources */,
+				DA5100000000000000000018 /* RightNowWidget.swift in Sources */,
+				DA5100000000000000000019 /* LockScreenCaptureWidgets.swift in Sources */,
+				DA5100000000000000000016 /* Provider.swift in Sources */,
+				DA5100000000000000000015 /* Palette.swift in Sources */,
+				DA5100000000000000000014 /* WidgetStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DA5100000000000000000038 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA5100000000000000000032 /* StilldoWidgets */;
+			targetProxy = DA5100000000000000000037 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -278,6 +427,7 @@
 			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-StillDo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
@@ -309,6 +459,7 @@
 			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-StillDo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
@@ -489,6 +640,55 @@
 			};
 			name = Release;
 		};
+		DA5100000000000000000039 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StilldoWidgets/StilldoWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKFU5NNRGV;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = StilldoWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.StillDo.StilldoWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DA510000000000000000003A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StilldoWidgets/StilldoWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKFU5NNRGV;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = StilldoWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.StillDo.StilldoWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -506,6 +706,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA510000000000000000003B /* Build configuration list for PBXNativeTarget "StilldoWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA5100000000000000000039 /* Debug */,
+				DA510000000000000000003A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

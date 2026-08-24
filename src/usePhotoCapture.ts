@@ -15,7 +15,14 @@ import {
 
 export type PhotoCapture = {
   error: string | null;
+  /** Offer the camera or the library — the Inbox's own "Snap it" button. */
   choose: () => void;
+  /**
+   * Straight to the camera, no sheet. The home-screen widget's snap button
+   * has already made that choice; asking again on arrival would undo the one
+   * tap the widget exists to save.
+   */
+  shoot: () => void;
   dismissError: () => void;
 };
 
@@ -47,6 +54,7 @@ export function usePhotoCapture(onPhoto: (uri: string) => void): PhotoCapture {
   );
 
   const shoot = useCallback(async () => {
+    setError(null);
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -99,5 +107,5 @@ export function usePhotoCapture(onPhoto: (uri: string) => void): PhotoCapture {
 
   const dismissError = useCallback(() => setError(null), []);
 
-  return { error, choose, dismissError };
+  return { error, choose, shoot, dismissError };
 }
