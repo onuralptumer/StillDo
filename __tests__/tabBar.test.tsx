@@ -44,7 +44,20 @@ test('every tab is present and reachable', () => {
 
 test('only the active tab says its name', () => {
   expect(labels(render('today'))).toEqual(['Today']);
-  expect(labels(render('settings'))).toEqual(['Settings']);
+  expect(labels(render('sweep'))).toEqual(['Sweep']);
+});
+
+test('settings is not a tab — it is reached from the header gear', () => {
+  const tree = render('today');
+  const names = tabNodes(tree).map(n => n.props.accessibilityLabel);
+  expect(names).not.toContain('Settings');
+  // On the settings screen there is simply no tab lit, rather than a wrong one.
+  expect(labels(render('settings'))).toEqual([]);
+  expect(
+    tabNodes(render('settings')).filter(
+      n => n.props.accessibilityState.selected,
+    ),
+  ).toHaveLength(0);
 });
 
 test('the inactive tabs are marks alone, but still named for a screen reader', () => {
@@ -52,7 +65,7 @@ test('the inactive tabs are marks alone, but still named for a screen reader', (
   const inactive = tabNodes(tree).filter(
     n => !n.props.accessibilityState.selected,
   );
-  expect(inactive).toHaveLength(3);
+  expect(inactive).toHaveLength(2);
   for (const node of inactive) {
     expect(node.findAllByType(Text)).toHaveLength(0);
     expect(node.props.accessibilityLabel).toBeTruthy();
@@ -74,7 +87,7 @@ test('tapping a tab asks for that screen', () => {
     asked.push(screen);
   });
   for (const node of tabNodes(tree)) node.props.onPress();
-  expect(asked).toEqual(['today', 'inbox', 'sweep', 'settings']);
+  expect(asked).toEqual(['today', 'inbox', 'sweep']);
 });
 
 test('a detail view keeps the tab it was opened from lit', () => {

@@ -1,5 +1,6 @@
 /**
- * The tab marks.
+ * The app's marks — the four tabs, and the few controls that say it with a
+ * stroke rather than a word.
  *
  * Drawn rather than imported from an icon set: at 22px with a 1.5 stroke they
  * carry the same weight as the app's hairlines and dashed rules, which an
@@ -12,7 +13,7 @@ import React from 'react';
 import Svg, { Circle, Line, Path, Rect } from 'react-native-svg';
 import type { Screen } from '../types';
 
-type IconProps = { color: string; size?: number; opacity?: number };
+export type IconProps = { color: string; size?: number; opacity?: number };
 
 const Frame = ({
   color,
@@ -60,13 +61,22 @@ const SweepIcon = (p: IconProps) => (
   </Frame>
 );
 
-/** Settings: the same sliders the reference uses. */
-const SettingsIcon = (p: IconProps) => (
+/**
+ * Settings: a gear. Eight teeth rather than the usual twelve — at 22px the
+ * finer ones close up into a ring and lose the shape entirely.
+ */
+export const GearIcon = (p: IconProps) => (
   <Frame {...p}>
-    <Line x1={9} y1={4} x2={9} y2={20} />
-    <Circle cx={9} cy={9} r={2.5} fill="none" />
-    <Line x1={15} y1={4} x2={15} y2={20} />
-    <Circle cx={15} cy={15} r={2.5} fill="none" />
+    <Path d="M10.32 3.4a1.2 1.2 0 0 1 1.2-1h.96a1.2 1.2 0 0 1 1.2 1l.16 1.24a7 7 0 0 1 1.7.7l1-.76a1.2 1.2 0 0 1 1.57.1l.68.68a1.2 1.2 0 0 1 .1 1.57l-.76 1a7 7 0 0 1 .7 1.7l1.24.16a1.2 1.2 0 0 1 1 1.2v.96a1.2 1.2 0 0 1-1 1.2l-1.24.16a7 7 0 0 1-.7 1.7l.76 1a1.2 1.2 0 0 1-.1 1.57l-.68.68a1.2 1.2 0 0 1-1.57.1l-1-.76a7 7 0 0 1-1.7.7l-.16 1.24a1.2 1.2 0 0 1-1.2 1h-.96a1.2 1.2 0 0 1-1.2-1l-.16-1.24a7 7 0 0 1-1.7-.7l-1 .76a1.2 1.2 0 0 1-1.57-.1l-.68-.68a1.2 1.2 0 0 1-.1-1.57l.76-1a7 7 0 0 1-.7-1.7l-1.24-.16a1.2 1.2 0 0 1-1-1.2v-.96a1.2 1.2 0 0 1 1-1.2l1.24-.16a7 7 0 0 1 .7-1.7l-.76-1a1.2 1.2 0 0 1 .1-1.57l.68-.68a1.2 1.2 0 0 1 1.57-.1l1 .76a7 7 0 0 1 1.7-.7Z" />
+    <Circle cx={12} cy={12} r={2.75} fill="none" />
+  </Frame>
+);
+
+/** Add: the plus on the inbox field, cut to the same cross as the rules. */
+export const PlusIcon = (p: IconProps) => (
+  <Frame {...p}>
+    <Line x1={12} y1={5.5} x2={12} y2={18.5} />
+    <Line x1={5.5} y1={12} x2={18.5} y2={12} />
   </Frame>
 );
 
@@ -74,7 +84,7 @@ export const TAB_ICONS: Record<Screen, (p: IconProps) => React.ReactElement> = {
   today: TodayIcon,
   inbox: InboxIcon,
   sweep: SweepIcon,
-  settings: SettingsIcon,
+  settings: GearIcon,
   // Detail has no tab of its own; the tab bar shows whatever it was opened from.
   detail: TodayIcon,
 };

@@ -11,6 +11,7 @@
 
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Illustration, type Illustrated } from '../components/Illustration';
 import { useTheme } from '../components/ThemeContext';
 import { LinkButton, OutlineButton } from '../components/controls';
 import { Display, Kicker, Lead } from '../components/primitives';
@@ -22,6 +23,8 @@ type Pane = {
   kicker: string;
   title: string;
   body: string;
+  /** The animation that sits above the words. */
+  art: Illustrated;
   /** Only the sweep pane asks for anything. */
   choose?: boolean;
 };
@@ -31,16 +34,19 @@ const PANES: Pane[] = [
     kicker: 'Why this exists',
     title: 'You will\nforget things',
     body: 'That is not a character flaw, it is how attention works. Stilldo is built to catch what slips, so you can stop carrying it all yourself.',
+    art: 'forget-password',
   },
   {
     kicker: 'Catching',
     title: 'Catch it\nbadly',
     body: 'Type it, say it, or photograph it. Half a thought is enough — nothing here needs sorting, dating or naming. The inbox is meant to be a mess.',
+    art: 'drawkit-notes',
   },
   {
     kicker: 'The sweep',
     title: 'One pass,\nevery evening',
     body: 'Stilldo brings back whatever is still open, one card at a time. Did it, moved it to tomorrow, or let it go — and the day is closed.',
+    art: 'making-notes',
     choose: true,
   },
 ];
@@ -109,6 +115,7 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
         </View>
 
         <View style={styles.body}>
+          <Illustration name={pane.art} />
           <Display>{pane.title}</Display>
           <Lead style={styles.lead}>{pane.body}</Lead>
 

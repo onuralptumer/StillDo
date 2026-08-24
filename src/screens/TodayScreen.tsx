@@ -66,7 +66,7 @@ export const TodayScreen = ({ s }: { s: Stilldo }) => {
       <Display style={styles.display}>Today</Display>
       <Lead style={styles.blurb}>
         {blank
-          ? 'Nothing caught yet. Put the first loose end in the inbox and let go of it.'
+          ? 'Nothing caught yet. Put the first task in the inbox and let go of it.'
           : openCount > 0
           ? `${openCount} open. You do not have to remember them — that is the app's job now.`
           : 'Nothing open. The sweep found everything.'}

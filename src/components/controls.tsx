@@ -14,6 +14,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { font, radius } from '../theme';
+import type { IconProps } from './icons';
 import { useTheme } from './ThemeContext';
 
 const styles = StyleSheet.create({
@@ -61,6 +62,15 @@ const styles = StyleSheet.create({
   },
   transparent: {
     backgroundColor: 'transparent',
+  },
+  icon: {
+    // Tight enough not to push the row it sits in taller than the text it
+    // replaces — the target is grown with `hitSlop` instead, which costs no
+    // layout. The pill shows only while pressed.
+    padding: 4,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -147,6 +157,39 @@ export const LinkButton = ({
           ]}>
           {label}
         </Text>
+      )}
+    </Pressable>
+  );
+};
+
+/**
+ * A button that says it with a stroke instead of a word. The mark carries no
+ * meaning to a screen reader, so `label` still names it — it just stops being
+ * drawn.
+ */
+export const IconButton = ({
+  icon: Icon,
+  label,
+  onPress,
+  style,
+  variant = 'primary',
+}: Omit<ButtonProps, 'size'> & {
+  icon: (p: IconProps) => React.ReactElement;
+}) => {
+  const c = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      hitSlop={8}
+      style={({ pressed }) => [
+        styles.icon,
+        { backgroundColor: pressed ? c.tint : 'transparent' },
+        style,
+      ]}>
+      {({ pressed }) => (
+        <Icon color={variant === 'primary' || pressed ? c.ink : c.mute} />
       )}
     </Pressable>
   );

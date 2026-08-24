@@ -62,9 +62,12 @@ export const settingDefs: SettingDef[] = [
   },
 ];
 
+/**
+ * The three places the app actually is. Settings is not among them — it is an
+ * aside, and reaches for the gear in the header instead.
+ */
 export const tabs: [string, string][] = [
   ['today', 'Today'],
   ['inbox', 'Inbox'],
   ['sweep', 'Sweep'],
-  ['settings', 'Settings'],
 ];

@@ -222,3 +222,35 @@ test('a photo is attached to the capture it was taken for', async () => {
   expect(added.source).toBe('Photo');
   spy.mockRestore();
 });
+
+test('the typed draft is added by the plus, which still names itself', async () => {
+  const db = nodeDriver();
+  await prepare(db);
+  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
+  let tree: ReactTestRenderer.ReactTestRenderer;
+  const Host = () => {
+    const s = useStilldo(db);
+    ref.current = s;
+    return <InboxScreen s={s} />;
+  };
+  await act(async () => {
+    tree = ReactTestRenderer.create(<Host />);
+  });
+
+  const before = ref.current.tasks.length;
+  await act(async () => ref.current.actions.setDraft('book the mot'));
+
+  // It draws a mark rather than a word, so the only handle on it is the name
+  // it gives assistive tech — which is exactly what this is guarding.
+  const add = tree!.root.findByProps({
+    accessibilityRole: 'button',
+    accessibilityLabel: 'Add',
+  });
+  await act(async () => add.props.onPress());
+
+  expect(ref.current.tasks).toHaveLength(before + 1);
+  expect(ref.current.tasks[ref.current.tasks.length - 1].title).toBe(
+    'book the mot',
+  );
+  expect(ref.current.draft).toBe('');
+});

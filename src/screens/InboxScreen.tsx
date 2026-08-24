@@ -5,13 +5,18 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
-import { HoldButton, LinkButton, OutlineButton } from '../components/controls';
+import {
+  HoldButton,
+  IconButton,
+  OutlineButton,
+} from '../components/controls';
 import {
   Display,
   Kicker,
   Lead,
   SectionHeading,
 } from '../components/primitives';
+import { PlusIcon } from '../components/icons';
 import { TaskRow } from '../components/TaskRow';
 import { font, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
@@ -35,6 +40,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 2,
   },
+  // Pulls the mark's own padding back out, so it sits where the word did.
+  add: { marginRight: -4 },
   input: {
     flex: 1,
     fontFamily: font.medium,
@@ -106,7 +113,7 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
           value={s.draft}
           onChangeText={s.actions.setDraft}
           onSubmitEditing={s.actions.addFromDraft}
-          placeholder="ADD A LOOSE END"
+          placeholder="ADD A TASK"
           placeholderTextColor={c.mute}
           // Matches the canvas's uppercase field without relying on
           // `textTransform`, which TextInput ignores on Android.
@@ -115,7 +122,12 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
           returnKeyType="done"
           style={[styles.input, { color: c.ink }]}
         />
-        <LinkButton label="Add" onPress={s.actions.addFromDraft} />
+        <IconButton
+          icon={PlusIcon}
+          label="Add"
+          onPress={s.actions.addFromDraft}
+          style={styles.add}
+        />
       </View>
 
       <View style={styles.capture}>

@@ -23,6 +23,8 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { TAB_BAR_HEIGHT, TabBar } from './src/components/TabBar';
+import { IconButton } from './src/components/controls';
+import { GearIcon } from './src/components/icons';
 import { Kicker, Lead } from './src/components/primitives';
 import { useDatabase } from './src/db/useDatabase';
 import { ThemeProvider } from './src/components/ThemeContext';
@@ -40,18 +42,16 @@ import { useSweepAlarm } from './src/useSweepAlarm';
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: {
-    height: 32,
+    // Held at the wordmark's old height so the page below does not jump when
+    // the gear is absent — during the intro, which hides it.
+    minHeight: 32,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingHorizontal: 30,
-    paddingBottom: 8,
-  },
-  wordmark: {
-    fontFamily: font.medium,
-    fontSize: 10,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+    // The gutter the wordmark sat in, less the mark's own padding, so the
+    // gear's edge lands where the last letter did.
+    paddingHorizontal: 26,
+    paddingBottom: 2,
   },
   scroll: { flex: 1 },
   // The bar floats over the page, so the page has to be able to scroll clear
@@ -121,7 +121,20 @@ function AppContent() {
           { backgroundColor: c.bg, paddingTop: insets.top },
         ]}>
         <View style={styles.header}>
-          <Text style={[styles.wordmark, { color: c.mute }]}>Stilldo</Text>
+          {/*
+            Settings is not one of the app's three places, so it is not a tab.
+            It sits up here instead, quiet until it is the screen you are on —
+            and is gone during the intro, which owns the whole frame for the
+            same reason the tabs are hidden there.
+          */}
+          {!onboarding && (
+            <IconButton
+              icon={GearIcon}
+              label="Settings"
+              variant={s.screen === 'settings' ? 'primary' : 'ghost'}
+              onPress={() => s.actions.go('settings')}
+            />
+          )}
         </View>
 
         {openError ? (

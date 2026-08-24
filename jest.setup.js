@@ -47,3 +47,14 @@ jest.mock('@notifee/react-native', () => ({
     openNotificationSettings: jest.fn(() => Promise.resolve()),
   },
 }));
+
+// Lottie is native. The intro renders it; the tests only care that the
+// surrounding pane still works, so a plain host view stands in for it.
+jest.mock('lottie-react-native', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    __esModule: true,
+    default: (props) => React.createElement(View, { ...props, testID: 'lottie' }),
+  };
+});
