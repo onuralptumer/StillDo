@@ -29,6 +29,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       launchOptions: launchOptions
     )
 
+    // React Native paints its root view `systemBackground` — white — which
+    // shows for the frame or two between the launch screen going and the app
+    // drawing. Hand it the same colour the launch screen used instead, so a
+    // cold start in dark mode does not flash white on the way in.
+    let paper = UIColor(named: "LaunchBackground")
+    window?.backgroundColor = paper
+    window?.rootViewController?.view.backgroundColor = paper
+
     return true
   }
 

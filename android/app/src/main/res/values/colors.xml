@@ -1,0 +1,9 @@
+<resources>
+    <!--
+        The window behind everything, including the frame or two before React
+        Native has drawn anything. These are `bg` from src/theme.ts — the light
+        pair here, the dark one in values-night — so the cold start opens on the
+        app's own paper rather than on the system's white.
+    -->
+    <color name="launch_background">#FBF7F3</color>
+</resources>

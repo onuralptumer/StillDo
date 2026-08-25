@@ -46,8 +46,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>ThinkLighter attaches a photo to a capture, so a receipt or a form is enough to jog your memory later.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ThinkLighter listens while you hold the capture button, so a loose end can be caught out loud instead of typed.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
