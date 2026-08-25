@@ -5,6 +5,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import ReactTestRenderer from 'react-test-renderer';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Voice from '@react-native-voice/voice';
 import { launchCamera } from 'react-native-image-picker';
 import { InboxScreen } from '../src/screens/InboxScreen';
@@ -23,14 +24,68 @@ const handlers = () => Voice as unknown as Record<string, Function>;
  * Find a button by its name — the word it draws, or, for the ones that draw a
  * mark instead, the name it gives assistive tech.
  */
-const button = (tree: ReactTestRenderer.ReactTestRenderer, label: string) =>
-  tree.root
-    .findAll(n => !!n.props.accessibilityRole)
-    .find(
-      n =>
-        n.props.accessibilityLabel === label ||
-        n.findAllByType(Text).some(t => t.props.children === label),
-    )!;
+const button = (tree: ReactTestRenderer.ReactTestRenderer, label: string) => {
+  const controls = tree.root.findAll(n => !!n.props.accessibilityRole);
+  return (
+    controls.find(n => n.props.accessibilityLabel === label) ??
+    // "Has a descendant with this word" is not enough — a sheet's scrim is a
+    // button too, and it wraps every word in the panel.
+    controls.find(n => {
+      const own = n.findAllByType(Text);
+      return own.length === 1 && own[0].props.children === label;
+    })!
+  );
+};
+
+/** The caption sheet reads safe-area insets, as it does inside the real app. */
+const METRICS = {
+  frame: { x: 0, y: 0, width: 393, height: 852 },
+  insets: { top: 59, left: 0, right: 0, bottom: 34 },
+};
+
+/** The Inbox on its own, with the store behind it. */
+async function mountInbox(db: ReturnType<typeof nodeDriver>) {
+  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
+  let tree: ReactTestRenderer.ReactTestRenderer;
+  const Host = () => {
+    const s = useStilldo(db);
+    ref.current = s;
+    return (
+      <SafeAreaProvider initialMetrics={METRICS}>
+        <InboxScreen s={s} />
+      </SafeAreaProvider>
+    );
+  };
+  await act(async () => {
+    tree = ReactTestRenderer.create(<Host />);
+  });
+  return { ref, tree: tree! };
+}
+
+/** The field the caption sheet puts up over the shot. */
+const captionField = (tree: ReactTestRenderer.ReactTestRenderer) =>
+  tree.root.findAll(n => n.props.placeholder === 'SAY WHAT IT IS')[0];
+
+/**
+ * Take a photo the way the "Snap it" button does: the sheet offers the camera
+ * and the library, and this answers "take a photo".
+ */
+async function snap(
+  tree: ReactTestRenderer.ReactTestRenderer,
+  uri: string,
+) {
+  (launchCamera as jest.Mock).mockResolvedValueOnce({ assets: [{ uri }] });
+  const { ActionSheetIOS } = require('react-native');
+  const spy = jest
+    .spyOn(ActionSheetIOS, 'showActionSheetWithOptions')
+    .mockImplementation((...args: unknown[]) =>
+      (args[1] as (i: number) => void)(0),
+    );
+  await act(async () => {
+    await button(tree, 'Snap it').props.onPress();
+  });
+  spy.mockRestore();
+}
 
 function mountVoice() {
   const heard: string[] = [];
@@ -165,21 +220,12 @@ test('a released hold still delivers the best partial when no final arrives', as
 test('a spoken capture lands in the inbox', async () => {
   const db = nodeDriver();
   await prepare(db);
-  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
-  let tree: ReactTestRenderer.ReactTestRenderer;
-  const Host = () => {
-    const s = useStilldo(db);
-    ref.current = s;
-    return <InboxScreen s={s} />;
-  };
-  await act(async () => {
-    tree = ReactTestRenderer.create(<Host />);
-  });
+  const { ref, tree } = await mountInbox(db);
 
   const before = ref.current.tasks.length;
   // Hold the button, then let the recogniser answer.
   await act(async () => {
-    await button(tree!, 'Hold to speak').props.onPressIn();
+    await button(tree, 'Hold to speak').props.onPressIn();
   });
   act(() => handlers().onSpeechResults({ value: ['chase the plumber'] }));
   act(() => handlers().onSpeechEnd({}));
@@ -191,42 +237,120 @@ test('a spoken capture lands in the inbox', async () => {
   expect(added.from).toBe('inbox');
 });
 
-test('a photo is attached to the capture it was taken for', async () => {
-  (launchCamera as jest.Mock).mockResolvedValueOnce({
-    assets: [{ uri: 'file:///tmp/receipt.jpg' }],
+describe('a snapped photo asks what it was of', () => {
+  const last = (ref: { current: Stilldo }) =>
+    ref.current.tasks[ref.current.tasks.length - 1];
+
+  test('the shot is held back until the caption is answered', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/receipt.jpg');
+
+    // Nothing is in the inbox yet — the sheet is up, showing the shot.
+    expect(ref.current.tasks).toEqual([]);
+    expect(captionField(tree)).toBeTruthy();
+    expect(
+      tree.root.findAll(n => n.props.source?.uri === 'file:///tmp/receipt.jpg'),
+    ).not.toHaveLength(0);
   });
 
-  const db = nodeDriver();
-  await prepare(db);
-  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
-  let tree: ReactTestRenderer.ReactTestRenderer;
-  const Host = () => {
-    const s = useStilldo(db);
-    ref.current = s;
-    return <InboxScreen s={s} />;
-  };
-  await act(async () => {
-    tree = ReactTestRenderer.create(<Host />);
+  test('what you write on it is what it is called', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/receipt.jpg');
+    await act(async () =>
+      captionField(tree).props.onChangeText('PARKING RECEIPT FOR THE CLAIM'),
+    );
+    await act(async () => button(tree, 'Catch it').props.onPress());
+
+    expect(ref.current.tasks).toHaveLength(1);
+    expect(last(ref).title).toBe('PARKING RECEIPT FOR THE CLAIM');
+    expect(last(ref).photoUri).toBe('file:///tmp/receipt.jpg');
+    expect(last(ref).source).toBe('Photo');
+    expect(last(ref).from).toBe('inbox');
+    // The sheet has closed behind it.
+    expect(captionField(tree)).toBeUndefined();
   });
 
-  const before = ref.current.tasks.length;
-  // Reach the picker the way the button does, then answer "take a photo".
-  const { ActionSheetIOS } = require('react-native');
-  const spy = jest
-    .spyOn(ActionSheetIOS, 'showActionSheetWithOptions')
-    .mockImplementation((...args: unknown[]) =>
-      (args[1] as (i: number) => void)(0),
+  test('the caption survives a cold launch, not just this render', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/form.jpg');
+    await act(async () => captionField(tree).props.onChangeText('PAGE 3'));
+    await act(async () => button(tree, 'Catch it').props.onPress());
+
+    const reopened = { current: null as unknown as Stilldo };
+    const Probe = () => {
+      reopened.current = useStilldo(db);
+      return null;
+    };
+    await act(async () => {
+      ReactTestRenderer.create(<Probe />);
+    });
+    expect(reopened.current.tasks.map(t => t.title)).toEqual(['PAGE 3']);
+  });
+
+  test('a blank caption still catches it, under the old name', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/shelf.jpg');
+    await act(async () => button(tree, 'Catch it').props.onPress());
+
+    expect(last(ref).title).toBe('Photo');
+    expect(last(ref).photoUri).toBe('file:///tmp/shelf.jpg');
+  });
+
+  test('whitespace is not a caption', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/shelf.jpg');
+    await act(async () => captionField(tree).props.onChangeText('   '));
+    await act(async () => button(tree, 'Catch it').props.onPress());
+
+    expect(last(ref).title).toBe('Photo');
+  });
+
+  /**
+   * The shot has already been taken by the time the sheet opens, so backing
+   * out of it must not be how a capture goes missing. Only "Discard" throws
+   * the photo away.
+   */
+  test('backing out of the sheet keeps the photo', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/loft.jpg');
+    await act(async () =>
+      button(tree, 'Catch it without a caption').props.onPress(),
     );
 
-  await act(async () => {
-    await button(tree!, 'Snap it').props.onPress();
+    expect(ref.current.tasks).toHaveLength(1);
+    expect(last(ref).photoUri).toBe('file:///tmp/loft.jpg');
   });
 
-  expect(ref.current.tasks).toHaveLength(before + 1);
-  const added = ref.current.tasks[ref.current.tasks.length - 1];
-  expect(added.photoUri).toBe('file:///tmp/receipt.jpg');
-  expect(added.source).toBe('Photo');
-  spy.mockRestore();
+  test('discarding it catches nothing at all', async () => {
+    const db = nodeDriver();
+    await prepare(db);
+    const { ref, tree } = await mountInbox(db);
+
+    await snap(tree, 'file:///tmp/blurred.jpg');
+    await act(async () => captionField(tree).props.onChangeText('OOPS'));
+    await act(async () => button(tree, 'Discard').props.onPress());
+
+    expect(ref.current.tasks).toEqual([]);
+    expect(captionField(tree)).toBeUndefined();
+  });
 });
 
 test('the typed draft is added by the plus, which still names itself', async () => {
@@ -294,18 +418,7 @@ async function mountInboxPastIntro() {
   await prepare(db);
   // `follow` holds a widget tap back until the intro has been through once.
   await putSetting(db, 'onboarded', 'yes');
-
-  const ref: { current: Stilldo } = { current: null as unknown as Stilldo };
-  let tree: ReactTestRenderer.ReactTestRenderer;
-  const Host = () => {
-    const s = useStilldo(db);
-    ref.current = s;
-    return <InboxScreen s={s} />;
-  };
-  await act(async () => {
-    tree = ReactTestRenderer.create(<Host />);
-  });
-  return { ref, tree: tree! };
+  return mountInbox(db);
 }
 
 test('the voice widget opens the app already listening, with no hold to make', async () => {
@@ -343,7 +456,7 @@ test('the snap widget goes straight to the camera, without asking again', async 
     .spyOn(ActionSheetIOS, 'showActionSheetWithOptions')
     .mockImplementation(() => {});
 
-  const { ref } = await mountInboxPastIntro();
+  const { ref, tree } = await mountInboxPastIntro();
   await act(async () =>
     ref.current.actions.follow({ kind: 'capture', how: 'photo' }),
   );
@@ -352,7 +465,12 @@ test('the snap widget goes straight to the camera, without asking again', async 
   expect(sheet).not.toHaveBeenCalled();
   expect(launchCamera).toHaveBeenCalled();
 
+  // A shot taken from the home screen is still asked what it was of.
+  await act(async () => captionField(tree).props.onChangeText('PASSPORT FORM'));
+  await act(async () => button(tree, 'Catch it').props.onPress());
+
   const added = ref.current.tasks[ref.current.tasks.length - 1];
+  expect(added.title).toBe('PASSPORT FORM');
   expect(added.photoUri).toBe('file:///tmp/form.jpg');
   sheet.mockRestore();
 });

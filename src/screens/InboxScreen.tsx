@@ -16,6 +16,7 @@ import {
   Lead,
   SectionHeading,
 } from '../components/primitives';
+import { CaptionSheet, UNCAPTIONED } from '../components/CaptionSheet';
 import { CameraIcon, MicIcon, PlusIcon } from '../components/icons';
 import { TaskRow } from '../components/TaskRow';
 import { font, space } from '../theme';
@@ -89,15 +90,26 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
       'Caught mid-sentence. The sweep will ask what you meant.',
     ),
   );
-  const photo = usePhotoCapture(uri =>
+  /**
+   * A shot that has been taken but not yet caught: it is waiting for its
+   * caption. The picker hands back a URI and this holds it while the sheet
+   * asks what it was of.
+   */
+  const [snapped, setSnapped] = useState<string | null>(null);
+  const photo = usePhotoCapture(setSnapped);
+
+  /** Put the held photo in the inbox, under whatever it has been called. */
+  const catchPhoto = (caption: string) => {
+    setSnapped(null);
     s.actions.capture(
-      // Just "Photo": the caught line under the row already gives the when.
+      caption || UNCAPTIONED,
       'Photo',
-      'Photo',
-      'A picture is enough. You will recognise it tonight even if you cannot name it now.',
-      uri,
-    ),
-  );
+      caption
+        ? 'A picture, and your own words on it. The sweep will bring it back tonight.'
+        : 'A picture is enough. You will recognise it tonight even if you cannot name it now.',
+      snapped ?? undefined,
+    );
+  };
   /**
    * A widget tap arrives as a request on the store, because this is the screen
    * that holds the microphone and the camera. Take it once, then let go of it
@@ -206,6 +218,14 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
           }}
         />
       </View>
+
+      {!!snapped && (
+        <CaptionSheet
+          uri={snapped}
+          onCatch={catchPhoto}
+          onDiscard={() => setSnapped(null)}
+        />
+      )}
 
       {(voice.listening || !!status) && (
         <View style={styles.status}>

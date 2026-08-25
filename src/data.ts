@@ -76,7 +76,7 @@ export type GuideSection = { title: string; body: string };
 export const appGuide: GuideSection[] = [
   {
     title: 'Catching',
-    body: 'Anything you might forget goes into the Inbox, and it is meant to go in badly. Type half a sentence, hold the button and say it out loud, or snap a photo of the letter, the shelf, the note on the fridge. There is nothing to date, tag or file — the point is to get it out of your head in one move and carry on with whatever you were doing.',
+    body: 'Anything you might forget goes into the Inbox, and it is meant to go in badly. Type half a sentence, hold the microphone and say it out loud, or snap a photo of the letter, the shelf, the note on the fridge. A photo asks for a line about what it was, so tonight you are not staring at a picture of a shelf — leave even that blank if you are in a hurry. There is nothing to date, tag or file: the point is to get it out of your head in one move and carry on with whatever you were doing.',
   },
   {
     title: 'Today',
