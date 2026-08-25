@@ -17,6 +17,9 @@ import { font, radius } from '../theme';
 import type { IconProps } from './icons';
 import { useTheme } from './ThemeContext';
 
+/** Small enough that a pill drawn round it stays the height of a tap target. */
+const ICON_IN_PILL = 20;
+
 const styles = StyleSheet.create({
   outline: {
     borderWidth: 1,
@@ -39,6 +42,12 @@ const styles = StyleSheet.create({
   outlineLabelSm: {
     fontSize: 10,
     letterSpacing: 0.9,
+  },
+  // A mark instead of a word: equal padding all round, so the pill closes to
+  // a circle about the icon rather than staying a lozenge with air either side.
+  outlineIcon: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
   filled: {
     borderRadius: radius.action,
@@ -83,8 +92,10 @@ type ButtonProps = {
    * `primary` full-contrast border and label, `quiet` a receding border around
    * a full-contrast label, `ghost` receding throughout. Pressing any of them
    * brings it up to full contrast, which is what the canvas's hover hints did.
+   * `accent` is the palette's one colour throughout: a press that cannot be
+   * taken back, or a control that is currently live.
    */
-  variant?: 'primary' | 'quiet' | 'ghost';
+  variant?: 'primary' | 'quiet' | 'ghost' | 'accent';
   /** The tighter capture buttons on the Inbox screen. */
   size?: 'md' | 'sm';
 };
@@ -95,31 +106,50 @@ export const OutlineButton = ({
   style,
   variant = 'primary',
   size = 'md',
-}: ButtonProps) => {
+  icon: Icon,
+}: ButtonProps & {
+  /** Draws this mark in place of the word. `label` still names the button. */
+  icon?: (p: IconProps) => React.ReactElement;
+}) => {
   const c = useTheme();
+  const lit = variant === 'accent';
+  const tone = (pressed: boolean) =>
+    lit ? c.accent : variant === 'ghost' && !pressed ? c.mute : c.ink;
   return (
     <Pressable
       accessibilityRole="button"
+      // Named either way: with a mark in place of the word there is nothing
+      // for assistive tech to read off the face of the button.
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.outline,
         size === 'sm' && styles.outlineSm,
+        !!Icon && styles.outlineIcon,
         {
-          borderColor: variant === 'primary' || pressed ? c.ink : c.mute,
+          borderColor: lit
+            ? c.accent
+            : variant === 'primary' || pressed
+            ? c.ink
+            : c.mute,
           backgroundColor: pressed ? c.tint : 'transparent',
         },
         style,
       ]}>
-      {({ pressed }) => (
-        <Text
-          style={[
-            styles.outlineLabel,
-            size === 'sm' && styles.outlineLabelSm,
-            { color: variant === 'ghost' && !pressed ? c.mute : c.ink },
-          ]}>
-          {label}
-        </Text>
-      )}
+      {({ pressed }) =>
+        Icon ? (
+          <Icon color={tone(pressed)} size={ICON_IN_PILL} />
+        ) : (
+          <Text
+            style={[
+              styles.outlineLabel,
+              size === 'sm' && styles.outlineLabelSm,
+              { color: tone(pressed) },
+            ]}>
+            {label}
+          </Text>
+        )
+      }
     </Pressable>
   );
 };
@@ -206,13 +236,16 @@ export const HoldButton = ({
   onPressIn,
   onPressOut,
   style,
+  icon: Icon,
 }: {
   label: string;
+  /** What it says while the recogniser is open — unused when drawn as a mark. */
   holdingLabel: string;
   holding: boolean;
   onPressIn: () => void;
   onPressOut: () => void;
   style?: StyleProp<ViewStyle>;
+  icon?: (p: IconProps) => React.ReactElement;
 }) => {
   const c = useTheme();
   return (
@@ -226,19 +259,26 @@ export const HoldButton = ({
       style={[
         styles.outline,
         styles.outlineSm,
+        !!Icon && styles.outlineIcon,
         styles.transparent,
         { borderColor: holding ? c.accent : c.mute },
         holding && { backgroundColor: c.tint },
         style,
       ]}>
-      <Text
-        style={[
-          styles.outlineLabel,
-          styles.outlineLabelSm,
-          { color: holding ? c.accent : c.ink },
-        ]}>
-        {holding ? holdingLabel : label}
-      </Text>
+      {Icon ? (
+        // The mark cannot change its word, so the accent is what says the
+        // microphone is open — with the line under the row spelling it out.
+        <Icon color={holding ? c.accent : c.ink} size={ICON_IN_PILL} />
+      ) : (
+        <Text
+          style={[
+            styles.outlineLabel,
+            styles.outlineLabelSm,
+            { color: holding ? c.accent : c.ink },
+          ]}>
+          {holding ? holdingLabel : label}
+        </Text>
+      )}
     </Pressable>
   );
 };

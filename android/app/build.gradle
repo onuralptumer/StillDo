@@ -97,7 +97,7 @@ android {
 
     namespace "com.stilldo"
     defaultConfig {
-        applicationId "com.stilldo"
+        applicationId "com.onuralptumer.thinklighter"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

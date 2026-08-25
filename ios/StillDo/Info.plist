@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>StillDo</string>
+	<string>ThinkLighter</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -16,7 +16,12 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
-	<!-- What the widgets open the app with; parsed by src/widgets/links.ts. -->
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -28,12 +33,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -45,18 +44,24 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Stilldo listens while you hold the capture button, so a loose end can be caught out loud instead of typed.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Stilldo turns what you say into the words on the task, so you can recognise it again at the evening sweep.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Stilldo attaches a photo to a capture, so a receipt or a form is enough to jog your memory later.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Stilldo attaches a photo you have already taken to a capture, so you do not have to shoot it again.</string>
+	<string>ThinkLighter attaches a photo to a capture, so a receipt or a form is enough to jog your memory later.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ThinkLighter listens while you hold the capture button, so a loose end can be caught out loud instead of typed.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ThinkLighter attaches a photo you have already taken to a capture, so you do not have to shoot it again.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>ThinkLighter turns what you say into the words on the task, so you can recognise it again at the evening sweep.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>HankenGrotesk-Medium.ttf</string>
+		<string>HankenGrotesk-SemiBold.ttf</string>
+		<string>HankenGrotesk-Regular.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -76,11 +81,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>HankenGrotesk-Medium.ttf</string>
-		<string>HankenGrotesk-SemiBold.ttf</string>
-		<string>HankenGrotesk-Regular.ttf</string>
-	</array>
 </dict>
 </plist>

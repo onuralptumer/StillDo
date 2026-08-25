@@ -16,7 +16,7 @@ import {
   Lead,
   SectionHeading,
 } from '../components/primitives';
-import { PlusIcon } from '../components/icons';
+import { CameraIcon, MicIcon, PlusIcon } from '../components/icons';
 import { TaskRow } from '../components/TaskRow';
 import { font, space } from '../theme';
 import type { Stilldo } from '../useStilldo';
@@ -166,15 +166,25 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
         />
       </View>
 
+      {/*
+        Two marks rather than two words. What each one does is short enough to
+        draw — a microphone, a camera — and the line under the row is where the
+        state gets spelled out, so the buttons do not have to carry it.
+      */}
       <View style={styles.capture}>
         {handsFree ? (
+          // Lit, because the microphone is already open: this is the way to
+          // close it, there being no finger on the button to lift.
           <OutlineButton
             size="sm"
+            variant="accent"
+            icon={MicIcon}
             label="Tap to catch it"
             onPress={voice.stop}
           />
         ) : (
           <HoldButton
+            icon={MicIcon}
             label="Hold to speak"
             holdingLabel="Listening…"
             holding={voice.listening}
@@ -188,6 +198,7 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
         <OutlineButton
           size="sm"
           variant="quiet"
+          icon={CameraIcon}
           label="Snap it"
           onPress={() => {
             voice.dismissError();

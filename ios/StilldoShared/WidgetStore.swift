@@ -13,7 +13,7 @@ import Foundation
 /// entitlements of both targets, and its name follows the bundle identifier —
 /// changing one means changing the other.
 enum WidgetStore {
-  static let appGroup = "group.org.reactjs.native.example.StillDo"
+  static let appGroup = "group.com.onuralptumer.thinklighter"
   static let snapshotKey = "stilldo.snapshot"
 
   private static var shared: UserDefaults? {

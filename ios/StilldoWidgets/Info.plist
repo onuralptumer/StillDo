@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Stilldo</string>
+	<string>ThinkLighter</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -25,8 +25,6 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
-	<!-- The widgets are the app's face on someone else's screen, so they carry
-	     the app's typeface rather than falling back to the system one. -->
 	<key>UIAppFonts</key>
 	<array>
 		<string>HankenGrotesk-Medium.ttf</string>

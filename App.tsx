@@ -163,7 +163,7 @@ function AppContent() {
 
         {openError ? (
           <View style={styles.centre}>
-            <Kicker>Stilldo could not open its store</Kicker>
+            <Kicker>ThinkLighter could not open its store</Kicker>
             <Lead>{openError}</Lead>
           </View>
         ) : !s.ready ? (

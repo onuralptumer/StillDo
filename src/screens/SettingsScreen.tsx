@@ -11,8 +11,9 @@ import {
   Kicker,
   SectionHeading,
 } from '../components/primitives';
+import { ConfirmSheet } from '../components/ConfirmSheet';
 import { OptionSheet } from '../components/OptionSheet';
-import { settingDefs } from '../data';
+import { appGuide, settingDefs } from '../data';
 import { font, radius, space } from '../theme';
 import type { SettingKey } from '../types';
 import type { Stilldo } from '../useStilldo';
@@ -56,6 +57,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 15.1,
   },
+  // The guide's prose, held a little in from the rows so it reads as an
+  // aside rather than as another setting.
+  guide: { paddingBottom: 8 },
+  guideTitle: { marginTop: 14 },
+  guideBody: {
+    fontFamily: font.regular,
+    fontSize: 14,
+    lineHeight: 19.6,
+    opacity: 0.75,
+    marginTop: 7,
+  },
   chip: {
     borderWidth: 1,
     borderRadius: radius.pill,
@@ -88,6 +100,10 @@ export const SettingsScreen = ({
 }) => {
   const c = useTheme();
   const [picking, setPicking] = useState<SettingKey | null>(null);
+  // Folded away by default: the guide is read once, and the screen is a place
+  // people come to change a time.
+  const [guiding, setGuiding] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const open = settingDefs.find(d => d.key === picking);
 
   return (
@@ -140,6 +156,68 @@ export const SettingsScreen = ({
         );
       })}
 
+      <SectionHeading>How it works</SectionHeading>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="App guide"
+        accessibilityHint="What ThinkLighter does with what you catch"
+        accessibilityState={{ expanded: guiding }}
+        onPress={() => setGuiding(v => !v)}
+        style={({ pressed }) => [
+          styles.row,
+          pressed && { backgroundColor: c.tint },
+        ]}>
+        <View style={styles.body}>
+          <Text style={[styles.label, { color: c.ink }]}>App guide</Text>
+          <Text style={[styles.desc, { color: c.ink }]}>
+            What the app does with what you catch.
+          </Text>
+        </View>
+        <View style={[styles.chip, { borderColor: c.ink }]}>
+          <Text style={[styles.chipLabel, { color: c.ink }]}>
+            {guiding ? 'Close' : 'Read'}
+          </Text>
+        </View>
+      </Pressable>
+      {guiding && (
+        <View style={styles.guide}>
+          {appGuide.map(section => (
+            <View key={section.title}>
+              <Kicker style={styles.guideTitle}>{section.title}</Kicker>
+              <Text style={[styles.guideBody, { color: c.ink }]}>
+                {section.body}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+      <DashedRule />
+
+      <SectionHeading>This device</SectionHeading>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Clear all local data"
+        accessibilityHint="Asks you to confirm before anything is deleted"
+        onPress={() => setClearing(true)}
+        style={({ pressed }) => [
+          styles.row,
+          pressed && { backgroundColor: c.tint },
+        ]}>
+        <View style={styles.body}>
+          <Text style={[styles.label, { color: c.ink }]}>
+            Clear all local data
+          </Text>
+          <Text style={[styles.desc, { color: c.ink }]}>
+            Every capture on this phone, and your settings with them.
+          </Text>
+        </View>
+        {/* The accent, because this is the one row that takes something away. */}
+        <View style={[styles.chip, { borderColor: c.accent }]}>
+          <Text style={[styles.chipLabel, { color: c.accent }]}>Clear</Text>
+        </View>
+      </Pressable>
+      <DashedRule />
+
       {!!open && (
         <OptionSheet
           title={open.label}
@@ -150,8 +228,21 @@ export const SettingsScreen = ({
         />
       )}
 
+      {clearing && (
+        <ConfirmSheet
+          title={'Clear\neverything?'}
+          body="Every capture on this phone is deleted, open or answered, along with the notes and photos attached to them. Your settings go back to their defaults. Nothing is copied anywhere else, so there is no way back from this."
+          confirmLabel="Clear everything"
+          onCancel={() => setClearing(false)}
+          onConfirm={() => {
+            setClearing(false);
+            s.actions.clearData();
+          }}
+        />
+      )}
+
       <Text style={[styles.footnote, { color: c.mute }]}>
-        * Stilldo stores captures on device. Sweep runs locally.
+        * ThinkLighter stores captures on device. Sweep runs locally.
       </Text>
     </View>
   );

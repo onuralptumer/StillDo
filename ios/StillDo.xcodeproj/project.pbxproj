@@ -22,13 +22,13 @@
 		DA5100000000000000000018 /* RightNowWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000005 /* RightNowWidget.swift */; };
 		DA5100000000000000000019 /* LockScreenCaptureWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000006 /* LockScreenCaptureWidgets.swift */; };
 		DA510000000000000000001A /* StilldoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000007 /* StilldoWidgetBundle.swift */; };
-		DA510000000000000000001F /* WidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000001 /* WidgetStore.swift */; };
-		DA5100000000000000000020 /* StilldoWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000C /* StilldoWidgets.swift */; };
-		DA5100000000000000000021 /* StilldoWidgets.m in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000D /* StilldoWidgets.m */; };
 		DA510000000000000000001B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000A /* PrivacyInfo.xcprivacy */; };
 		DA510000000000000000001C /* HankenGrotesk-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D083088712A0410EBFA522A4 /* HankenGrotesk-Medium.ttf */; };
 		DA510000000000000000001D /* HankenGrotesk-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13D9960C57CF473EA6DEE27A /* HankenGrotesk-SemiBold.ttf */; };
 		DA510000000000000000001E /* HankenGrotesk-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 554DB2DFCD87454D83D625D5 /* HankenGrotesk-Regular.ttf */; };
+		DA510000000000000000001F /* WidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5100000000000000000001 /* WidgetStore.swift */; };
+		DA5100000000000000000020 /* StilldoWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000C /* StilldoWidgets.swift */; };
+		DA5100000000000000000021 /* StilldoWidgets.m in Sources */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000D /* StilldoWidgets.m */; };
 		DA5100000000000000000022 /* StilldoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DA510000000000000000000B /* StilldoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -69,7 +69,6 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = StillDo/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = StillDo/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D083088712A0410EBFA522A4 /* HankenGrotesk-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "HankenGrotesk-Medium.ttf"; path = "../assets/fonts/HankenGrotesk-Medium.ttf"; sourceTree = "<group>"; };
-		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		DA5100000000000000000001 /* WidgetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStore.swift; sourceTree = "<group>"; };
 		DA5100000000000000000002 /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		DA5100000000000000000003 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
@@ -84,6 +83,7 @@
 		DA510000000000000000000C /* StilldoWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StilldoWidgets.swift; path = StillDo/StilldoWidgets.swift; sourceTree = "<group>"; };
 		DA510000000000000000000D /* StilldoWidgets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StilldoWidgets.m; path = StillDo/StilldoWidgets.m; sourceTree = "<group>"; };
 		DA510000000000000000000E /* StillDo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StillDo.entitlements; path = StillDo/StillDo.entitlements; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,9 +335,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-StillDo/Pods-StillDo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-StillDo/Pods-StillDo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -374,9 +378,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-StillDo/Pods-StillDo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-StillDo/Pods-StillDo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -427,12 +435,13 @@
 			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-StillDo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = StillDo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ThinkLighter;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -444,12 +453,15 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onuralptumer.thinklighter;
 				PRODUCT_NAME = StillDo;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -459,11 +471,12 @@
 			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-StillDo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = StillDo/StillDo.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
 				INFOPLIST_FILE = StillDo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ThinkLighter;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -475,11 +488,14 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onuralptumer.thinklighter;
 				PRODUCT_NAME = StillDo;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -656,12 +672,14 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.StillDo.StilldoWidgets";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onuralptumer.thinklighter.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -681,11 +699,13 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.StillDo.StilldoWidgets";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onuralptumer.thinklighter.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -24,7 +24,7 @@ private struct LockCaptureView: View {
       case .accessoryInline:
         // One line, shared with whatever else is on that row: name the app,
         // because "Speak it" alone says nothing about what it belongs to.
-        Label("Stilldo — \(word)", systemImage: symbol)
+        Label("ThinkLighter — \(word)", systemImage: symbol)
       case .accessoryRectangular:
         rectangular
       default:
@@ -77,7 +77,7 @@ struct VoiceCaptureWidget: Widget {
       )
     }
     .configurationDisplayName("Catch it out loud")
-    .description("Opens Stilldo listening, so the thought can be said before it goes.")
+    .description("Opens ThinkLighter listening, so the thought can be said before it goes.")
     .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
   }
 }
@@ -93,7 +93,7 @@ struct TextCaptureWidget: Widget {
       )
     }
     .configurationDisplayName("Catch it in a line")
-    .description("Opens Stilldo with the cursor already in the inbox field.")
+    .description("Opens ThinkLighter with the cursor already in the inbox field.")
     .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
   }
 }
@@ -109,7 +109,7 @@ struct PhotoCaptureWidget: Widget {
       )
     }
     .configurationDisplayName("Catch it as a picture")
-    .description("Opens Stilldo with the camera coming up, for a receipt or a form.")
+    .description("Opens ThinkLighter with the camera coming up, for a receipt or a form.")
     .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
   }
 }

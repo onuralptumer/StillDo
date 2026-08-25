@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">StillDo</string>
+    <string name="app_name">ThinkLighter</string>
 
     <!-- The widgets. The layouts hold the fixed words; the provider pushes in
          everything that depends on what the app knows. -->
-    <string name="widget_wordmark">Stilldo</string>
+    <string name="widget_wordmark">ThinkLighter</string>
     <string name="widget_right_now">Right now</string>
     <string name="widget_say_it">Say it</string>
     <string name="widget_speak_it">Speak it</string>

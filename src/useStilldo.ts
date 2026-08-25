@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { seedSettings } from './data';
 import { isoDay, tomorrow } from './date';
 import type { SqlDriver } from './db/driver';
+import { clearAll } from './db/reset';
 import { allSettings, putSetting } from './db/settings';
 import { allTasks, insertTask, updateTask } from './db/tasks';
 import type {
@@ -350,6 +351,36 @@ export function useStilldo(db: SqlDriver | null) {
     [setSetting],
   );
 
+  /**
+   * Empty the store: every capture gone, every setting back to its default.
+   *
+   * `onboarded` is carried across rather than reset. Clearing your data is not
+   * a request to sit through the intro again, and the screen that offers this
+   * is one you can only reach by having been through it already.
+   *
+   * The sweep in progress goes too — its queue is a list of ids that no longer
+   * exist — and the id counter starts over, which is safe now the table it was
+   * seeded past is empty.
+   */
+  const clearData = useCallback(() => {
+    const settings: Settings = {
+      ...seedSettings,
+      onboarded: stateRef.current.settings.onboarded,
+    };
+    nextId.current = 1;
+    setState(s => ({
+      ...s,
+      tasks: [],
+      settings,
+      draft: '',
+      sweepQueue: [],
+      sweepIdx: 0,
+      sweepLog: [],
+      dbError: null,
+    }));
+    write(d => clearAll(d, settings));
+  }, [write]);
+
   const detail = useMemo(
     () => state.tasks.find(t => t.id === state.detailId),
     [state.tasks, state.detailId],
@@ -382,6 +413,7 @@ export function useStilldo(db: SqlDriver | null) {
       setSetting,
       cycleSetting,
       finishOnboarding,
+      clearData,
     },
   };
 }

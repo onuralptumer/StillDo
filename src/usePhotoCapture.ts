@@ -37,7 +37,7 @@ export function usePhotoCapture(onPhoto: (uri: string) => void): PhotoCapture {
         return;
       }
       if (r.errorCode === 'permission') {
-        setError('Stilldo needs camera access to snap it.');
+        setError('ThinkLighter needs camera access to snap it.');
         return;
       }
       if (r.errorCode) {
@@ -60,7 +60,7 @@ export function usePhotoCapture(onPhoto: (uri: string) => void): PhotoCapture {
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        setError('Stilldo needs camera access to snap it.');
+        setError('ThinkLighter needs camera access to snap it.');
         return;
       }
     }

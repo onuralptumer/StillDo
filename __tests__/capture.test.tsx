@@ -19,12 +19,17 @@ const act = ReactTestRenderer.act;
 /** The recogniser's callbacks, as the hook installed them. */
 const handlers = () => Voice as unknown as Record<string, Function>;
 
-/** Find a button by the label its own Text renders. */
+/**
+ * Find a button by its name — the word it draws, or, for the ones that draw a
+ * mark instead, the name it gives assistive tech.
+ */
 const button = (tree: ReactTestRenderer.ReactTestRenderer, label: string) =>
   tree.root
     .findAll(n => !!n.props.accessibilityRole)
-    .find(n =>
-      n.findAllByType(Text).some(t => t.props.children === label),
+    .find(
+      n =>
+        n.props.accessibilityLabel === label ||
+        n.findAllByType(Text).some(t => t.props.children === label),
     )!;
 
 function mountVoice() {
@@ -254,6 +259,30 @@ test('the typed draft is added by the plus, which still names itself', async () 
     'book the mot',
   );
   expect(ref.current.draft).toBe('');
+});
+
+/**
+ * Both capture buttons say it with a stroke rather than a word, which is the
+ * one change that can quietly make a control unreachable — there is nothing
+ * left on the face of them for a screen reader to say.
+ */
+test('the mic and the camera still name themselves', async () => {
+  const db = nodeDriver();
+  await prepare(db);
+  let tree: ReactTestRenderer.ReactTestRenderer;
+  const Host = () => <InboxScreen s={useStilldo(db)} />;
+  await act(async () => {
+    tree = ReactTestRenderer.create(<Host />);
+  });
+
+  for (const name of ['Hold to speak', 'Snap it']) {
+    const control = tree!.root.find(
+      n => n.props.accessibilityRole === 'button' &&
+        n.props.accessibilityLabel === name,
+    );
+    // Nothing is drawn but the mark itself.
+    expect(control.findAllByType(Text)).toHaveLength(0);
+  }
 });
 
 /**

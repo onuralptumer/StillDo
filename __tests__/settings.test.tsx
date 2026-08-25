@@ -9,7 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SettingsScreen } from '../src/screens/SettingsScreen';
 import { prepare } from '../src/db/schema';
 import { nodeDriver } from '../testing/nodeDriver';
-import { settingDefs, sweepTimePresets, sweepTimes } from '../src/data';
+import { appGuide, settingDefs, sweepTimePresets, sweepTimes } from '../src/data';
 import { useStilldo, type Stilldo } from '../src/useStilldo';
 import type { SweepAlarm } from '../src/useSweepAlarm';
 
@@ -59,6 +59,10 @@ const control = (tree: ReactTestRenderer.ReactTestRenderer, label: string) =>
 
 const wheel = (tree: ReactTestRenderer.ReactTestRenderer) =>
   tree.root.findAll(n => !!n.props.onMomentumScrollEnd)[0];
+
+/** Is this exact string drawn anywhere on the screen? */
+const drawn = (tree: ReactTestRenderer.ReactTestRenderer, text: string) =>
+  tree.root.findAllByType(Text).some(n => n.props.children === text);
 
 const rowFor = (tree: ReactTestRenderer.ReactTestRenderer, label: string) =>
   tree.root
@@ -208,5 +212,138 @@ describe('what Settings admits about the alarm', () => {
   test('an unanswered permission holds its tongue until the answer lands', async () => {
     const { tree } = await mount({ ...allowed, permitted: null });
     expect(blocked(tree)).toBeUndefined();
+  });
+});
+
+describe('the app guide', () => {
+  const guideRow = (tree: ReactTestRenderer.ReactTestRenderer) =>
+    rowFor(tree, 'App guide');
+
+  test('it is folded away until it is asked for', async () => {
+    const { tree } = await mount();
+    expect(guideRow(tree)).toBeTruthy();
+    for (const section of appGuide) {
+      expect(drawn(tree, section.body)).toBe(false);
+    }
+  });
+
+  test('opening it puts every section on the screen', async () => {
+    const { tree } = await mount();
+    await act(async () => guideRow(tree).props.onPress());
+
+    for (const section of appGuide) {
+      expect(drawn(tree, section.title)).toBe(true);
+      expect(drawn(tree, section.body)).toBe(true);
+    }
+    // Long enough to be a guide rather than a tagline.
+    expect(appGuide.map(g => g.body).join(' ').length).toBeGreaterThan(800);
+  });
+
+  test('it folds away again', async () => {
+    const { tree } = await mount();
+    await act(async () => guideRow(tree).props.onPress());
+    await act(async () => guideRow(tree).props.onPress());
+    expect(drawn(tree, appGuide[0].body)).toBe(false);
+  });
+});
+
+describe('clearing all local data', () => {
+  /** Two captures and a non-default setting, so there is something to lose. */
+  const fill = async (ref: { current: Stilldo }) => {
+    await act(async () => {
+      ref.current.actions.setSetting('onboarded', 'yes');
+      ref.current.actions.capture('Bins out', 'Typed', 'Recycling week');
+      ref.current.actions.capture('Ring the vet', 'Typed', '');
+      ref.current.actions.setSetting('appearance', 'Light');
+    });
+  };
+
+  test('the row alone deletes nothing — it asks first', async () => {
+    const { ref, tree } = await mount();
+    await fill(ref);
+
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+
+    expect(ref.current.tasks).toHaveLength(2);
+    expect(control(tree, 'Clear everything')).toBeTruthy();
+    expect(control(tree, 'Cancel')).toBeTruthy();
+  });
+
+  test('backing out leaves everything where it was', async () => {
+    const { ref, tree } = await mount();
+    await fill(ref);
+
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+    await act(async () => control(tree, 'Cancel')!.props.onPress());
+
+    expect(control(tree, 'Clear everything')).toBeUndefined();
+    expect(ref.current.tasks).toHaveLength(2);
+    expect(ref.current.settings.appearance).toBe('Light');
+  });
+
+  test('confirming empties the store, on screen and on disk', async () => {
+    const { ref, tree, db } = await mount();
+    await fill(ref);
+
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+    await act(async () => control(tree, 'Clear everything')!.props.onPress());
+
+    expect(ref.current.tasks).toEqual([]);
+    expect(ref.current.dueTasks).toEqual([]);
+    // The sheet is gone, and nothing is left claiming to have failed.
+    expect(control(tree, 'Clear everything')).toBeUndefined();
+    expect(ref.current.dbError).toBeNull();
+
+    const rows = await db.execute('SELECT * FROM tasks');
+    expect(rows).toEqual([]);
+  });
+
+  test('settings go back to their defaults, but the intro is not re-run', async () => {
+    const { ref, tree } = await mount();
+    await fill(ref);
+    expect(ref.current.settings.appearance).toBe('Light');
+
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+    await act(async () => control(tree, 'Clear everything')!.props.onPress());
+
+    expect(ref.current.settings.appearance).toBe('System');
+    expect(ref.current.settings.sweepTime).toBe('21:00');
+    // Being sent back through the intro is not what "clear my data" asked for.
+    expect(ref.current.settings.onboarded).toBe('yes');
+  });
+
+  test('a cold launch reads back an empty store', async () => {
+    const { ref, tree, db } = await mount();
+    await fill(ref);
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+    await act(async () => control(tree, 'Clear everything')!.props.onPress());
+
+    const reopened = { current: null as unknown as Stilldo };
+    const Probe = () => {
+      reopened.current = useStilldo(db);
+      return null;
+    };
+    await act(async () => {
+      ReactTestRenderer.create(<Probe />);
+    });
+
+    expect(reopened.current.tasks).toEqual([]);
+    expect(reopened.current.settings.appearance).toBe('System');
+    expect(reopened.current.settings.onboarded).toBe('yes');
+  });
+
+  test('a capture made afterwards does not collide with a cleared id', async () => {
+    const { ref, tree, db } = await mount();
+    await fill(ref);
+    await act(async () => rowFor(tree, 'Clear all local data').props.onPress());
+    await act(async () => control(tree, 'Clear everything')!.props.onPress());
+
+    await act(async () => {
+      ref.current.actions.capture('Something new', 'Typed', '');
+    });
+
+    expect(ref.current.dbError).toBeNull();
+    expect(ref.current.tasks.map(t => t.title)).toEqual(['Something new']);
+    expect(await db.execute('SELECT * FROM tasks')).toHaveLength(1);
   });
 });

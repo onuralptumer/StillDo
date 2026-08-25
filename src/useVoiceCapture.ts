@@ -27,7 +27,7 @@ const SILENT = ['7', '6', 'recognition_fail'];
 
 const message = (code: string | undefined) => {
   if (code && SILENT.includes(code)) return 'Did not catch that — hold and try again.';
-  if (code === '9' || code === 'permissions') return 'Stilldo needs the microphone to catch it out loud.';
+  if (code === '9' || code === 'permissions') return 'ThinkLighter needs the microphone to catch it out loud.';
   return 'Speech capture is unavailable on this device.';
 };
 
@@ -121,7 +121,7 @@ export function useVoiceCapture(
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        setError('Stilldo needs the microphone to catch it out loud.');
+        setError('ThinkLighter needs the microphone to catch it out loud.');
         return;
       }
     }

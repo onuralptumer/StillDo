@@ -80,6 +80,26 @@ export const PlusIcon = (p: IconProps) => (
   </Frame>
 );
 
+/**
+ * Speak: a mic on its stand. The capsule is drawn as a rounded rect rather
+ * than a path — at 22px the two read the same, and this one cannot go wrong.
+ */
+export const MicIcon = (p: IconProps) => (
+  <Frame {...p}>
+    <Rect x={9} y={3} width={6} height={10} rx={3} />
+    <Path d="M6 11v1a6 6 0 0 0 12 0v-1" />
+    <Line x1={12} y1={18} x2={12} y2={20.5} />
+  </Frame>
+);
+
+/** Snap it: a camera, body and lens, with the viewfinder bump on top. */
+export const CameraIcon = (p: IconProps) => (
+  <Frame {...p}>
+    <Path d="M21 18.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h3l1.6-2.4h4.8L16 7.5h3a2 2 0 0 1 2 2Z" />
+    <Circle cx={12} cy={13.5} r={3.5} fill="none" />
+  </Frame>
+);
+
 export const TAB_ICONS: Record<Screen, (p: IconProps) => React.ReactElement> = {
   today: TodayIcon,
   inbox: InboxIcon,

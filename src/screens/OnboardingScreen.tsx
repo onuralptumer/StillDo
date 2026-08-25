@@ -33,7 +33,7 @@ const PANES: Pane[] = [
   {
     kicker: 'Why this exists',
     title: 'You will\nforget things',
-    body: 'That is not a character flaw, it is how attention works. Stilldo is built to catch what slips, so you can stop carrying it all yourself.',
+    body: 'That is not a character flaw, it is how attention works. ThinkLighter is built to catch what slips, so you can stop carrying it all yourself.',
     art: 'forget-password',
   },
   {
@@ -45,7 +45,7 @@ const PANES: Pane[] = [
   {
     kicker: 'The sweep',
     title: 'One pass,\nevery evening',
-    body: 'Stilldo brings back whatever is still open, one card at a time. Did it, moved it to tomorrow, or let it go — and the day is closed.',
+    body: 'ThinkLighter brings back whatever is still open, one card at a time. Did it, moved it to tomorrow, or let it go — and the day is closed.',
     art: 'making-notes',
     choose: true,
   },

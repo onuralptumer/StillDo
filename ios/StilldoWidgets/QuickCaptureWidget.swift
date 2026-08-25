@@ -103,7 +103,7 @@ private struct QuickCaptureView: View {
 
   private var header: some View {
     HStack {
-      Text("Stilldo")
+      Text("ThinkLighter")
         .font(.label(10))
         .tracking(1)
         .textCase(.uppercase)

@@ -7,7 +7,7 @@
 	     app's own defaults and nothing ever sees it. -->
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.org.reactjs.native.example.StillDo</string>
+		<string>group.com.onuralptumer.thinklighter</string>
 	</array>
 </dict>
 </plist>
