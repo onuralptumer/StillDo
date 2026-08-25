@@ -661,7 +661,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = StilldoWidgets/StilldoWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = StilldoWidgets/Info.plist;
@@ -688,7 +688,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = StilldoWidgets/StilldoWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = HKFU5NNRGV;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = StilldoWidgets/Info.plist;
