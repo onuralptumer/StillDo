@@ -20,7 +20,6 @@ import {
 } from 'react-native';
 import {
   SafeAreaProvider,
-  initialWindowMetrics,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { TAB_BAR_HEIGHT, TabBar } from './src/components/TabBar';
@@ -216,14 +215,8 @@ function AppContent() {
 }
 
 export default function App() {
-  // The provider holds its children back until the native view reports insets,
-  // and that event never lands under the bridgeless runtime — it is dispatched
-  // through `RCTEventEmitter`, which is not registered there, so the app tree
-  // below never mounted at all. The metrics read at launch are the same
-  // numbers, so hand them over up front rather than wait for an event that is
-  // not coming.
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+    <SafeAreaProvider>
       <AppContent />
     </SafeAreaProvider>
   );
