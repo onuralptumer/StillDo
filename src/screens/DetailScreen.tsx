@@ -6,12 +6,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { FilledButton, LinkButton } from '../components/controls';
-import {
-  DashedRule,
-  Display,
-  Kicker,
-  Lead,
-} from '../components/primitives';
+import { DashedRule, Display, Kicker, Lead } from '../components/primitives';
 import { Snapshot } from '../components/Snapshot';
 import { stamp } from '../date';
 import { font, space } from '../theme';
@@ -36,10 +31,10 @@ const styles = StyleSheet.create({
     fontFamily: font.medium,
     fontSize: 11,
     letterSpacing: 0.77,
-    textTransform: 'uppercase',
   },
   actions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     alignItems: 'center',
     marginTop: space.section,

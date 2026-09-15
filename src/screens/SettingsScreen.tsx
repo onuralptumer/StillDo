@@ -31,20 +31,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 18,
-    paddingVertical: 18,
+    padding: 18,
+    borderRadius: 22,
+    marginBottom: 10,
   },
   body: { flex: 1, minWidth: 0 },
   label: {
     fontFamily: font.medium,
-    fontSize: 12,
-    letterSpacing: 0.84,
-    textTransform: 'uppercase',
+    fontSize: 14,
+    letterSpacing: 0,
   },
   desc: {
     fontFamily: font.regular,
-    fontSize: 12,
-    lineHeight: 15.1,
-    opacity: 0.55,
+    fontSize: 14,
+    lineHeight: 20,
+    opacity: 0.75,
     marginTop: 6,
   },
   // Sits directly under "Sweep at", where the promise it qualifies is made.
@@ -54,8 +55,8 @@ const styles = StyleSheet.create({
   },
   blockedText: {
     fontFamily: font.regular,
-    fontSize: 12,
-    lineHeight: 15.1,
+    fontSize: 14,
+    lineHeight: 20,
   },
   // The guide's prose, held a little in from the rows so it reads as an
   // aside rather than as another setting.
@@ -76,18 +77,16 @@ const styles = StyleSheet.create({
   },
   chipLabel: {
     fontFamily: font.medium,
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.9,
-    textTransform: 'uppercase',
   },
   // The canvas drops to Arial here; on device the system face is the
   // equivalent "not the brand font" signal for legal small print.
   footnote: {
     marginTop: space.section,
-    fontSize: 8,
+    fontSize: 11,
     fontWeight: '500',
     letterSpacing: 0.48,
-    textTransform: 'uppercase',
   },
 });
 
@@ -125,13 +124,20 @@ export const SettingsScreen = ({
               }
               style={({ pressed }) => [
                 styles.row,
+                { backgroundColor: c.raise },
                 pressed && { backgroundColor: c.tint },
-              ]}>
+              ]}
+            >
               <View style={styles.body}>
                 <Text style={[styles.label, { color: c.ink }]}>{label}</Text>
                 <Text style={[styles.desc, { color: c.ink }]}>{desc}</Text>
               </View>
-              <View style={[styles.chip, { borderColor: c.ink }]}>
+              <View
+                style={[
+                  styles.chip,
+                  { borderColor: c.line, backgroundColor: c.sage },
+                ]}
+              >
                 <Text style={[styles.chipLabel, { color: c.ink }]}>
                   {value}
                 </Text>
@@ -145,7 +151,8 @@ export const SettingsScreen = ({
                 accessibilityRole="button"
                 accessibilityLabel="Turn on notifications"
                 onPress={alarm.openSettings}
-                style={styles.blocked}>
+                style={styles.blocked}
+              >
                 <Text style={[styles.blockedText, { color: c.accent }]}>
                   Notifications are off, so the sweep cannot reach you. Turn
                   them on →
@@ -165,15 +172,22 @@ export const SettingsScreen = ({
         onPress={() => setGuiding(v => !v)}
         style={({ pressed }) => [
           styles.row,
+          { backgroundColor: c.raise },
           pressed && { backgroundColor: c.tint },
-        ]}>
+        ]}
+      >
         <View style={styles.body}>
           <Text style={[styles.label, { color: c.ink }]}>App guide</Text>
           <Text style={[styles.desc, { color: c.ink }]}>
             What the app does with what you catch.
           </Text>
         </View>
-        <View style={[styles.chip, { borderColor: c.ink }]}>
+        <View
+          style={[
+            styles.chip,
+            { borderColor: c.line, backgroundColor: c.sage },
+          ]}
+        >
           <Text style={[styles.chipLabel, { color: c.ink }]}>
             {guiding ? 'Close' : 'Read'}
           </Text>
@@ -201,8 +215,10 @@ export const SettingsScreen = ({
         onPress={() => setClearing(true)}
         style={({ pressed }) => [
           styles.row,
+          { backgroundColor: c.raise },
           pressed && { backgroundColor: c.tint },
-        ]}>
+        ]}
+      >
         <View style={styles.body}>
           <Text style={[styles.label, { color: c.ink }]}>
             Clear all local data

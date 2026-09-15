@@ -5,11 +5,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
-import {
-  HoldButton,
-  IconButton,
-  OutlineButton,
-} from '../components/controls';
+import { HoldButton, IconButton, OutlineButton } from '../components/controls';
 import {
   Display,
   Kicker,
@@ -37,17 +33,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderBottomWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 2,
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
   },
   // Pulls the mark's own padding back out, so it sits where the word did.
   add: { marginRight: -4 },
   input: {
     flex: 1,
     fontFamily: font.medium,
-    fontSize: 13,
-    letterSpacing: 0.91,
+    fontSize: 17,
+    letterSpacing: 0,
     paddingVertical: 4,
     padding: 0,
   },
@@ -141,7 +138,9 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
   const status = voice.listening
     ? voice.partial
     : voice.error || photo.error || '';
-  const list = s.tasks.filter(t => t.from === 'inbox' && t.status !== 'dropped');
+  const list = s.tasks.filter(
+    t => t.from === 'inbox' && t.status !== 'dropped',
+  );
   const uncategorised = s.tasks.filter(
     t => t.from === 'inbox' && t.status === 'open',
   ).length;
@@ -155,17 +154,20 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
         don't have to hold it.
       </Lead>
 
-      <View style={[styles.field, { borderBottomColor: c.ink }]}>
+      <View
+        style={[
+          styles.field,
+          { borderColor: c.line, backgroundColor: c.raise },
+        ]}
+      >
         <TextInput
           ref={field}
           value={s.draft}
           onChangeText={s.actions.setDraft}
           onSubmitEditing={s.actions.addFromDraft}
-          placeholder="ADD A TASK"
+          placeholder="What’s on your mind?"
           placeholderTextColor={c.mute}
-          // Matches the canvas's uppercase field without relying on
-          // `textTransform`, which TextInput ignores on Android.
-          autoCapitalize="characters"
+          autoCapitalize="sentences"
           autoCorrect={false}
           returnKeyType="done"
           style={[styles.input, { color: c.ink }]}
@@ -231,7 +233,9 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
         <View style={styles.status}>
           {voice.listening && (
             <Text style={[styles.statusLabel, { color: c.accent }]}>
-              {handsFree ? 'Listening — tap to catch it' : 'Release to catch it'}
+              {handsFree
+                ? 'Listening — tap to catch it'
+                : 'Release to catch it'}
             </Text>
           )}
           {!!status && (
@@ -239,7 +243,8 @@ export const InboxScreen = ({ s }: { s: Stilldo }) => {
               style={[
                 voice.listening ? styles.heard : styles.statusLabel,
                 { color: voice.listening ? c.ink : c.accent },
-              ]}>
+              ]}
+            >
               {status}
             </Text>
           )}

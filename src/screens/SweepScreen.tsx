@@ -28,10 +28,11 @@ const styles = StyleSheet.create({
   },
   display: { marginTop: 10 },
   track: {
-    height: 1,
+    height: 8,
+    borderRadius: 4,
     marginTop: 24,
   },
-  fill: { height: 1 },
+  fill: { height: 8, borderRadius: 4 },
   counter: { marginTop: 10, letterSpacing: 0.9 },
   card: {
     marginTop: space.section,
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
     fontFamily: font.medium,
     fontSize: 11,
     letterSpacing: 0.88,
-    textTransform: 'uppercase',
     paddingTop: space.rule,
   },
 });
@@ -94,18 +94,23 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
       <View
         accessibilityRole="progressbar"
         accessibilityValue={{ now: s.sweepIdx, min: 0, max: total }}
-        style={[styles.track, { backgroundColor: c.line }]}>
+        style={[styles.track, { backgroundColor: c.line }]}
+      >
         <View
-          style={[styles.fill, { backgroundColor: c.ink, width: `${pct}%` }]}
+          style={[styles.fill, { backgroundColor: c.accent, width: `${pct}%` }]}
         />
       </View>
       <Kicker style={styles.counter}>
-        {card ? `${s.sweepIdx + 1} of ${total}` : total === 0 ? 'Nothing to check' : 'Swept'}
+        {card
+          ? `${s.sweepIdx + 1} of ${total}`
+          : total === 0
+          ? 'Nothing to check'
+          : 'Swept'}
       </Kicker>
 
       {card ? (
         <>
-          <View style={[styles.card, { backgroundColor: c.raise }]}>
+          <View style={[styles.card, { backgroundColor: c.peach }]}>
             <Kicker style={{ color: c.accent }}>{card.source}</Kicker>
             <CardTitle>{card.title}</CardTitle>
             <CardNote>{card.note}</CardNote>
@@ -141,7 +146,11 @@ export const SweepScreen = ({ s }: { s: Stilldo }) => {
       ) : (
         <View style={styles.done}>
           <DisplayLarge>
-            {total === 0 ? 'Nothing to sweep.' : did > 0 ? 'Day closed.' : 'All clear.'}
+            {total === 0
+              ? 'Nothing to sweep.'
+              : did > 0
+              ? 'Day closed.'
+              : 'All clear.'}
           </DisplayLarge>
           <Lead style={styles.resultBody}>
             {total === 0

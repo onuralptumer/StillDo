@@ -7,7 +7,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { stamp } from '../date';
 import { font } from '../theme';
 import type { Task } from '../types';
-import { DashedRule } from './primitives';
 import { useTheme } from './ThemeContext';
 
 const styles = StyleSheet.create({
@@ -15,11 +14,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 14,
     alignItems: 'flex-start',
-    paddingVertical: 18,
+    padding: 20,
+    marginBottom: 10,
+    borderRadius: 22,
+    minHeight: 84,
   },
   dot: {
-    width: 9,
-    height: 9,
+    width: 18,
+    height: 18,
     borderRadius: 9999,
     marginTop: 5,
   },
@@ -29,23 +31,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: font.medium,
-    fontSize: 14,
-    letterSpacing: 0.42,
-    lineHeight: 16.8,
-    textTransform: 'uppercase',
+    fontSize: 17,
+    letterSpacing: 0,
+    lineHeight: 23,
   },
   meta: {
     fontFamily: font.medium,
     fontSize: 11,
     letterSpacing: 0.66,
-    textTransform: 'uppercase',
     marginTop: 7,
   },
   state: {
     fontFamily: font.medium,
     fontSize: 10,
     letterSpacing: 0.8,
-    textTransform: 'uppercase',
     paddingTop: 2,
   },
   chevron: {
@@ -81,13 +80,15 @@ export const TaskRow = ({
         onPress={onPress}
         style={({ pressed }) => [
           styles.row,
+          { backgroundColor: c.raise },
           pressed && { backgroundColor: c.tint },
-        ]}>
+        ]}
+      >
         {variant === 'today' && (
           <View
             style={[
               styles.dot,
-              { backgroundColor: dotColor(task, c.mute, c.line) },
+              { backgroundColor: dotColor(task, c.accent, c.sage) },
             ]}
           />
         )}
@@ -108,7 +109,6 @@ export const TaskRow = ({
           <Text style={[styles.chevron, { color: c.mute }]}>→</Text>
         )}
       </Pressable>
-      <DashedRule />
     </View>
   );
 };

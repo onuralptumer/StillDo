@@ -1,11 +1,4 @@
-/**
- * Design tokens ported from Stilldo.dc.html.
- *
- * The canvas expresses type in CSS `em` letter-spacing; React Native wants
- * points, so every `letterSpacing` here is `em * fontSize` pre-multiplied.
- *
- * @format
- */
+/** Shared colors, typography, and shapes for the calm Stilldo interface. */
 
 export type Palette = {
   page: string;
@@ -17,30 +10,42 @@ export type Palette = {
   mute: string;
   line: string;
   tint: string;
+  peach: string;
+  sage: string;
+  blue: string;
+  onAccent: string;
 };
 
 export const dark: Palette = {
-  page: '#0a0503',
-  bg: '#100904',
-  raise: '#382416',
-  raiseHi: '#4a3020',
-  accent: '#dc5000',
-  ink: '#ffedd7',
-  mute: '#6c5f51',
-  line: '#40372e',
-  tint: 'rgba(255,237,215,.08)',
+  page: '#172B29',
+  bg: '#172B29',
+  raise: '#233B37',
+  raiseHi: '#304B44',
+  accent: '#A8D5BE',
+  ink: '#F9F3E8',
+  mute: '#B1C0B7',
+  line: '#3C534B',
+  tint: 'rgba(168,213,190,.12)',
+  peach: '#584139',
+  sage: '#304D42',
+  blue: '#304653',
+  onAccent: '#173A30',
 };
 
 export const light: Palette = {
-  page: '#efe8e0',
-  bg: '#fbf7f3',
-  raise: '#f2e3d3',
-  raiseHi: '#e9d4c0',
-  accent: '#a83900',
-  ink: '#251a11',
-  mute: '#6b5949',
-  line: '#d9cabb',
-  tint: 'rgba(37,26,17,.06)',
+  page: '#F8F5EC',
+  bg: '#F8F5EC',
+  raise: '#FFFDF8',
+  raiseHi: '#EEEADF',
+  accent: '#2E6959',
+  ink: '#203B36',
+  mute: '#65756D',
+  line: '#DFE5DA',
+  tint: 'rgba(46,105,89,.08)',
+  peach: '#F4D0B4',
+  sage: '#DCE9D9',
+  blue: '#DBE8EF',
+  onAccent: '#FFFFFF',
 };
 
 /**
@@ -61,6 +66,6 @@ export const space = {
 
 export const radius = {
   pill: 22.5,
-  card: 12,
-  action: 36,
+  card: 28,
+  action: 22,
 } as const;

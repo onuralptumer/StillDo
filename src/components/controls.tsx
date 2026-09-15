@@ -22,6 +22,8 @@ const ICON_IN_PILL = 20;
 
 const styles = StyleSheet.create({
   outline: {
+    minHeight: 44,
+    justifyContent: 'center',
     borderWidth: 1,
     borderRadius: radius.pill,
     paddingVertical: 11,
@@ -34,14 +36,13 @@ const styles = StyleSheet.create({
   },
   outlineLabel: {
     fontFamily: font.medium,
-    fontSize: 11,
-    letterSpacing: 0.99,
-    textTransform: 'uppercase',
+    fontSize: 14,
+    letterSpacing: 0,
     textAlign: 'center',
   },
   outlineLabelSm: {
-    fontSize: 10,
-    letterSpacing: 0.9,
+    fontSize: 13,
+    letterSpacing: 0,
   },
   // A mark instead of a word: equal padding all round, so the pill closes to
   // a circle about the icon rather than staying a lozenge with air either side.
@@ -57,16 +58,14 @@ const styles = StyleSheet.create({
   },
   filledLabel: {
     fontFamily: font.medium,
-    fontSize: 12,
-    letterSpacing: 1.08,
-    textTransform: 'uppercase',
+    fontSize: 15,
+    letterSpacing: 0,
     textAlign: 'center',
   },
   link: {
     fontFamily: font.medium,
-    fontSize: 11,
-    letterSpacing: 0.99,
-    textTransform: 'uppercase',
+    fontSize: 14,
+    letterSpacing: 0,
     textDecorationLine: 'underline',
   },
   transparent: {
@@ -135,7 +134,8 @@ export const OutlineButton = ({
           backgroundColor: pressed ? c.tint : 'transparent',
         },
         style,
-      ]}>
+      ]}
+    >
       {({ pressed }) =>
         Icon ? (
           <Icon color={tone(pressed)} size={ICON_IN_PILL} />
@@ -145,7 +145,8 @@ export const OutlineButton = ({
               styles.outlineLabel,
               size === 'sm' && styles.outlineLabelSm,
               { color: tone(pressed) },
-            ]}>
+            ]}
+          >
             {label}
           </Text>
         )
@@ -162,10 +163,11 @@ export const FilledButton = ({ label, onPress, style }: ButtonProps) => {
       onPress={onPress}
       style={({ pressed }) => [
         styles.filled,
-        { backgroundColor: pressed ? c.raiseHi : c.raise },
+        { backgroundColor: c.accent, opacity: pressed ? 0.8 : 1 },
         style,
-      ]}>
-      <Text style={[styles.filledLabel, { color: c.ink }]}>{label}</Text>
+      ]}
+    >
+      <Text style={[styles.filledLabel, { color: c.onAccent }]}>{label}</Text>
     </Pressable>
   );
 };
@@ -184,7 +186,8 @@ export const LinkButton = ({
           style={[
             styles.link,
             { color: variant === 'primary' || pressed ? c.ink : c.mute },
-          ]}>
+          ]}
+        >
           {label}
         </Text>
       )}
@@ -217,7 +220,8 @@ export const IconButton = ({
         styles.icon,
         { backgroundColor: pressed ? c.tint : 'transparent' },
         style,
-      ]}>
+      ]}
+    >
       {({ pressed }) => (
         <Icon color={variant === 'primary' || pressed ? c.ink : c.mute} />
       )}
@@ -264,7 +268,8 @@ export const HoldButton = ({
         { borderColor: holding ? c.accent : c.mute },
         holding && { backgroundColor: c.tint },
         style,
-      ]}>
+      ]}
+    >
       {Icon ? (
         // The mark cannot change its word, so the accent is what says the
         // microphone is open — with the line under the row spelling it out.
@@ -275,7 +280,8 @@ export const HoldButton = ({
             styles.outlineLabel,
             styles.outlineLabelSm,
             { color: holding ? c.accent : c.ink },
-          ]}>
+          ]}
+        >
           {holding ? holdingLabel : label}
         </Text>
       )}

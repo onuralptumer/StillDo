@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     fontFamily: font.medium,
     fontSize: 11,
     letterSpacing: 0.99,
-    textTransform: 'uppercase',
   },
   foot: {
     flexDirection: 'row',
@@ -103,7 +102,8 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
   return (
     <ScrollView
       contentContainerStyle={styles.scroll}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.page}>
         <View style={styles.head}>
           <Kicker>{pane.kicker}</Kicker>
@@ -115,7 +115,11 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
         </View>
 
         <View style={styles.body}>
-          <Illustration name={pane.art} />
+          <View
+            style={{ backgroundColor: c.peach, borderRadius: 36, padding: 24 }}
+          >
+            <Illustration name={pane.art} />
+          </View>
           <Display>{pane.title}</Display>
           <Lead style={styles.lead}>{pane.body}</Lead>
 
@@ -134,12 +138,14 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
                       style={[
                         styles.chip,
                         { borderColor: on ? c.ink : c.line },
-                      ]}>
+                      ]}
+                    >
                       <Text
                         style={[
                           styles.chipLabel,
                           { color: on ? c.ink : c.mute },
-                        ]}>
+                        ]}
+                      >
                         {time}
                       </Text>
                     </Pressable>
@@ -154,7 +160,8 @@ export const OnboardingScreen = ({ s }: { s: Stilldo }) => {
           <View
             accessibilityRole="progressbar"
             accessibilityValue={{ now: step + 1, min: 1, max: PANES.length }}
-            style={styles.ticks}>
+            style={styles.ticks}
+          >
             {PANES.map((_, i) => (
               <View
                 key={i}

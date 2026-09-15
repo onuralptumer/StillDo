@@ -42,9 +42,9 @@ test('every tab is present and reachable', () => {
   expect(names).toEqual(tabs.map(([, label]) => label));
 });
 
-test('only the active tab says its name', () => {
-  expect(labels(render('today'))).toEqual(['Today']);
-  expect(labels(render('sweep'))).toEqual(['Sweep']);
+test('all tabs remain labeled when selection changes', () => {
+  expect(labels(render('today'))).toEqual(['Today', 'Inbox', 'Sweep']);
+  expect(labels(render('sweep'))).toEqual(['Today', 'Inbox', 'Sweep']);
 });
 
 test('settings is not a tab — it is reached from the header gear', () => {
@@ -52,7 +52,7 @@ test('settings is not a tab — it is reached from the header gear', () => {
   const names = tabNodes(tree).map(n => n.props.accessibilityLabel);
   expect(names).not.toContain('Settings');
   // On the settings screen there is simply no tab lit, rather than a wrong one.
-  expect(labels(render('settings'))).toEqual([]);
+  expect(labels(render('settings'))).toEqual(['Today', 'Inbox', 'Sweep']);
   expect(
     tabNodes(render('settings')).filter(
       n => n.props.accessibilityState.selected,
@@ -60,14 +60,16 @@ test('settings is not a tab — it is reached from the header gear', () => {
   ).toHaveLength(0);
 });
 
-test('the inactive tabs are marks alone, but still named for a screen reader', () => {
+test('inactive tabs have visible and accessible names', () => {
   const tree = render('sweep');
   const inactive = tabNodes(tree).filter(
     n => !n.props.accessibilityState.selected,
   );
   expect(inactive).toHaveLength(2);
   for (const node of inactive) {
-    expect(node.findAllByType(Text)).toHaveLength(0);
+    expect(node.findAllByType(Text)[0].props.children).toBe(
+      node.props.accessibilityLabel,
+    );
     expect(node.props.accessibilityLabel).toBeTruthy();
   }
 });
@@ -92,5 +94,9 @@ test('tapping a tab asks for that screen', () => {
 
 test('a detail view keeps the tab it was opened from lit', () => {
   // App passes the origin screen, never 'detail' itself.
-  expect(labels(render('inbox'))).toEqual(['Inbox']);
+  expect(
+    tabNodes(render('inbox'))
+      .filter(n => n.props.accessibilityState.selected)
+      .map(n => n.props.accessibilityLabel),
+  ).toEqual(['Inbox']);
 });

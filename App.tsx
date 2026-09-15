@@ -48,10 +48,10 @@ const styles = StyleSheet.create({
   header: {
     // Held at the wordmark's old height so the page below does not jump when
     // the gear is absent — during the intro, which hides it.
-    minHeight: 32,
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     // The gutter the wordmark sat in, less the mark's own padding, so the
     // gear's edge lands where the last letter did.
     paddingHorizontal: 26,
@@ -141,11 +141,14 @@ function AppContent() {
         barStyle={scheme === 'light' ? 'dark-content' : 'light-content'}
       />
       <View
-        style={[
-          styles.root,
-          { backgroundColor: c.bg, paddingTop: insets.top },
-        ]}>
+        style={[styles.root, { backgroundColor: c.bg, paddingTop: insets.top }]}
+      >
         <View style={styles.header}>
+          <Text
+            style={{ fontFamily: font.semibold, fontSize: 18, color: c.accent }}
+          >
+            ThinkLighter<Text style={{ color: c.mute }}> ·</Text>
+          </Text>
           {/*
             Settings is not one of the app's three places, so it is not a tab.
             It sits up here instead, quiet until it is the screen you are on —
@@ -176,13 +179,15 @@ function AppContent() {
         ) : (
           <KeyboardAvoidingView
             style={styles.scroll}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          >
             <ScrollView
               ref={scroller}
               style={styles.scroll}
               contentContainerStyle={styles.scrollBody}
               keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag">
+              keyboardDismissMode="on-drag"
+            >
               {s.screen === 'today' && <TodayScreen s={s} />}
               {s.screen === 'inbox' && <InboxScreen s={s} />}
               {s.screen === 'detail' && <DetailScreen s={s} />}
@@ -196,7 +201,8 @@ function AppContent() {
 
         <View
           pointerEvents="box-none"
-          style={[styles.floating, { bottom: Math.max(insets.bottom, 12) }]}>
+          style={[styles.floating, { bottom: Math.max(insets.bottom, 12) }]}
+        >
           {!!(s.dbError || alarm.error) && (
             <View style={styles.fault}>
               <Text style={[styles.faultText, { color: c.accent }]}>
@@ -206,9 +212,7 @@ function AppContent() {
               </Text>
             </View>
           )}
-          {!onboarding && (
-            <TabBar active={activeTab} onSelect={s.actions.go} />
-          )}
+          {!onboarding && <TabBar active={activeTab} onSelect={s.actions.go} />}
         </View>
       </View>
     </ThemeProvider>

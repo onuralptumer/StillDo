@@ -1,5 +1,5 @@
 /**
- * A floating pill bar: the active tab carries its label, the rest are marks.
+ * A floating navigation bar with persistent labels and a highlighted selection.
  *
  * @format
  */
@@ -12,12 +12,12 @@ import type { Screen } from '../types';
 import { TAB_ICONS } from './icons';
 import { useTheme } from './ThemeContext';
 
-const HEIGHT = 62;
+const HEIGHT = 72;
 
 const styles = StyleSheet.create({
   bar: {
     height: HEIGHT,
-    borderRadius: HEIGHT / 2,
+    borderRadius: 26,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -34,21 +34,19 @@ const styles = StyleSheet.create({
     }),
   },
   tab: {
-    height: 46,
+    height: 56,
     minWidth: 46,
     borderRadius: 23,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 4,
+    flex: 1,
   },
-  /** Only the active tab is wide enough to say its name. */
-  chosen: { paddingHorizontal: 18 },
   label: {
     fontFamily: font.medium,
-    fontSize: 10,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
+    fontSize: 12,
+    letterSpacing: 0,
   },
 });
 
@@ -61,7 +59,7 @@ export const TabBar = ({
 }) => {
   const c = useTheme();
   return (
-    <View style={[styles.bar, { backgroundColor: c.raise }]}>
+    <View style={[styles.bar, { backgroundColor: c.ink }]}>
       {tabs.map(([key, label]) => {
         const on = active === key;
         const Icon = TAB_ICONS[key as Screen];
@@ -74,19 +72,14 @@ export const TabBar = ({
             onPress={() => onSelect(key as Screen)}
             style={({ pressed }) => [
               styles.tab,
-              on && styles.chosen,
-              on && { backgroundColor: c.raiseHi },
+              on && { backgroundColor: c.accent },
               pressed && !on && { backgroundColor: c.tint },
-            ]}>
-            {/*
-              Dimmed ink rather than the mute tone: against the raised bar,
-              mute nearly disappears in the dark theme, and these are the
-              app's only means of navigation.
-            */}
-            <Icon color={c.ink} opacity={on ? 1 : 0.55} />
-            {on && (
-              <Text style={[styles.label, { color: c.ink }]}>{label}</Text>
-            )}
+            ]}
+          >
+            <Icon color={on ? c.onAccent : c.bg} opacity={on ? 1 : 0.7} />
+            <Text style={[styles.label, { color: on ? c.onAccent : c.bg }]}>
+              {label}
+            </Text>
           </Pressable>
         );
       })}

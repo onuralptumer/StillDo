@@ -70,10 +70,7 @@ const captionField = (tree: ReactTestRenderer.ReactTestRenderer) =>
  * Take a photo the way the "Snap it" button does: the sheet offers the camera
  * and the library, and this answers "take a photo".
  */
-async function snap(
-  tree: ReactTestRenderer.ReactTestRenderer,
-  uri: string,
-) {
+async function snap(tree: ReactTestRenderer.ReactTestRenderer, uri: string) {
   (launchCamera as jest.Mock).mockResolvedValueOnce({ assets: [{ uri }] });
   const { ActionSheetIOS } = require('react-native');
   const spy = jest
@@ -136,7 +133,9 @@ test('the whole phrase survives, not just its first word', async () => {
   expect(heard).toEqual([]);
   expect(ref.current.listening).toBe(true);
 
-  act(() => handlers().onSpeechResults({ value: ['ring the vet back on Friday'] }));
+  act(() =>
+    handlers().onSpeechResults({ value: ['ring the vet back on Friday'] }),
+  );
   act(() => handlers().onSpeechEnd({}));
 
   expect(heard).toEqual(['ring the vet back on Friday']);
@@ -401,7 +400,8 @@ test('the mic and the camera still name themselves', async () => {
 
   for (const name of ['Hold to speak', 'Snap it']) {
     const control = tree!.root.find(
-      n => n.props.accessibilityRole === 'button' &&
+      n =>
+        n.props.accessibilityRole === 'button' &&
         n.props.accessibilityLabel === name,
     );
     // Nothing is drawn but the mark itself.
@@ -482,7 +482,7 @@ test('the text widget opens the app with the cursor in the field', async () => {
 
   const { ref, tree } = await mountInboxPastIntro();
 
-  const field = tree.root.findByProps({ placeholder: 'ADD A TASK' });
+  const field = tree.root.findByProps({ placeholder: 'What’s on your mind?' });
   const focus = jest.spyOn(field.instance as { focus: () => void }, 'focus');
 
   await act(async () =>
